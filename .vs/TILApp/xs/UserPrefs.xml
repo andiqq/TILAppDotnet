@@ -1,0 +1,36 @@
+﻿<Properties StartupConfiguration="{2387B877-F0CA-442F-9B03-D660EB819612}|http" GitUserInfo="UsingGIT">
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints />
+  <MonoDevelop.Ide.ItemProperties.TILApp PreferredExecutionTarget="/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="TILApp/Models/Category.cs">
+    <Files>
+      <File FileName="TILApp/Program.cs" Line="11" Column="35" />
+      <File FileName="TILApp/Controllers/AcronymController.cs" Line="59" Column="35" />
+      <File FileName="TILApp/Controllers/UserController.cs" Line="29" Column="108" />
+      <File FileName="TILApp/Controllers/CategoryController.cs" Line="39" Column="1" />
+      <File FileName="TILApp/Models/Acronym.cs" Line="10" Column="59" />
+      <File FileName="TILApp/Data/AcronymContext.cs" />
+      <File FileName="TILApp/Models/Category.cs" Line="25" Column="1" />
+      <File FileName="TILApp/Models/User.cs" Line="12" Column="32" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="TILApp" expanded="True">
+            <Node name="TILApp" expanded="True">
+              <Node name="Dependencies" expanded="True">
+                <Node name="PackageDependencies" expanded="True" />
+              </Node>
+              <Node name="Controllers" expanded="True" />
+              <Node name="Models" expanded="True">
+                <Node name="Category.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+</Properties>
