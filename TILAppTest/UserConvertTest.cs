@@ -1,21 +1,22 @@
-﻿//using static TILApp.Models.AcronymDto;
-using System.Collections;
+﻿using System.Collections;
+using Moq;
 using TILApp.Models;
+using TILApp.Controllers;
 
 namespace TILAppTest;
 
-public class AcronymConvertTest
+public class UserConvertTest
 {
-    public class AcronymTest : IEnumerable<object[]>
+    public class UserTest : IEnumerable<object[]>
     {
         public IEnumerator<object[]> GetEnumerator()
         {
             yield return new object[]
             {
-                new List<Acronym>()
+                new List<User>()
                 {
-                    new Acronym() { Id = 1, Long = "Oh My God", Short = "OMG", UserId = 1 },
-                    new Acronym() { Id = 2, Long = "Thank God it's Friday", Short = "TGIF", UserId = 2 }
+                    new User() { Id = 1, Name = "Egon Olsen", UserName = "eolsen" },
+                    new User() { Id = 2, Name = "Peter Parker", UserName = "spman" }
                 }
             };
         }
@@ -23,65 +24,76 @@ public class AcronymConvertTest
     }
 
 
-    //private static readonly List<Acronym> acronyms = new List<Acronym>() { new Acronym() { Id = 1, Long = "Oh My God", Short = "OMG", UserId = 1 },
-    //                                               new Acronym() { Id = 2, Long = "Thank God it's Friday", Short = "TGIF", UserId = 2 }  };
-
-
-   
-    public bool compare(Acronym acronym)
+    public bool compare(User user, UserDto userDto)
     {
-        AcronymDto dtoResult = AcronymDto.convertedFrom(acronym);
-
         bool isTrue =
             (
-            dtoResult.Id == acronym.Id &&
-            dtoResult.Long == acronym.Long &&
-            dtoResult.Short == acronym.Short &&
-            dtoResult.UserId == acronym.UserId
+            userDto.Id == user.Id &&
+            userDto.Name == user.Name &&
+            userDto.UserName == user.UserName 
             );
         return isTrue;
     }
 
-    public bool compare(List<Acronym> acronyms)
+    public bool compare(List<User> users, List<UserDto> dtos)
     {
-        List<AcronymDto> dtosResult = AcronymDto.convertedFrom(acronyms);
-
         bool isTrue = true;
 
-        for (int i = 0;  i < acronyms.Count(); i++)
+        for (int i = 0;  i < users.Count(); i++)
         {
-            isTrue = (
-                acronyms[i].Id == dtosResult[i].Id &&
-                acronyms[i].Long == dtosResult[i].Long &&
-                acronyms[i].Short == dtosResult[i].Short &&
-                acronyms[i].UserId == dtosResult[i].UserId &&
-                compare(acronyms[i])
-                );
+            isTrue = (compare(users[i], dtos[i]));
             if (!isTrue) return false;
         }
         return true;
     }
 
     [Theory]
-    [ClassData(typeof(AcronymTest))]
-    public void TestAcronymDtoConvert(List<Acronym> acronyms)
+    [ClassData(typeof(UserTest))]
+    public void TestUserDtoConvert(List<User> users)
     {
         bool isTrue = true;
 
-        foreach (Acronym acronym in acronyms)
+        foreach (User user in users)
         {
-            if (!compare(acronym)) isTrue = false;
+            UserDto dtoResult = UserDto.convertedFrom(user);
+            if (!compare(user, dtoResult)) isTrue = false;
             break;
         }
 
-        Assert.True(isTrue, "conversion error");
+        Assert.True(isTrue, "user conversion error");
     }
 
     [Theory]
-    [ClassData(typeof(AcronymTest))]
-    public void TestAcronymsDtoConvert(List<Acronym> acronyms)
+    [ClassData(typeof(UserTest))]
+    public void TestUserssDtoConvert(List<User> users)
     {
-        var isTrue = compare(acronyms);
-        Assert.True(isTrue, "List conversion error");
+        List<UserDto> dtos = UserDto.convertedFrom(users);
+        var isTrue = compare(users, dtos);
+        Assert.True(isTrue, "userList conversion error");
     }
+
+    private IEnumerable<User> GetFakeData()
+    {
+        return new List<User>()
+                {
+                    new User() { Id = 1, Name = "Egon Olsen", UserName = "eolsen" },
+                    new User() { Id = 2, Name = "Peter Parker", UserName = "spman" }
+                };
+    }
+
+    [Fact]
+    public void GetUsersTest()
+    {
+        var service = new Mock<AcronymContext>();
+
+        var users = GetFakeData();
+
+        service.Setup(x => x.User.AddRange(users));
+
+        var controller = new UserController(service.Object);
+
+        var results = controller.GetUser();
+
+    }
+
 }

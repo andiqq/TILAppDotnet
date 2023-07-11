@@ -1,27 +1,28 @@
-﻿public class Category
+﻿namespace TILApp.Models
 {
-    public int Id { get; set; }
-    public string? Name { get; set; }
 
-    public ICollection<Acronym>? Acronyms { get; set; }
-}
-
-public class CategoryDto
-{
-    public int Id { get; set; }
-    public string? Name { get; set; }
-
-    public static CategoryDto convertedFrom(Category category)
+    public class Category
     {
-        return new CategoryDto() { Id = category.Id, Name = category.Name };
+        public int Id { get; set; }
+        public string? Name { get; set; }
+
+        public ICollection<Acronym>? Acronyms { get; set; }
     }
 
-    public static List<CategoryDto> convertedFrom(List<Category> categories)
+    public class CategoryDto
     {
-        return categories.Select(a => convertedFrom(a)).OrderBy(i => i.Id).ToList();
+        public int Id { get; set; }
+        public string? Name { get; set; }
+
+        public static CategoryDto convertedFrom(Category category)
+        {
+            return new CategoryDto() { Id = category.Id, Name = category.Name };
+        }
+
+        public static List<CategoryDto> convertedFrom(List<Category> categories)
+        {
+            return categories.Select(a => convertedFrom(a)).OrderBy(i => i.Id).ToList();
+        }
     }
+
 }
-
-
-
-

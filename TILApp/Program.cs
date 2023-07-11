@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // --> Configure Services
 
 builder.Services.AddControllers();
+builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<AcronymContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("AcronymContext")));
@@ -21,6 +22,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseStaticFiles();
+
+app.UseRouting();
+
+
+
+app.MapRazorPages();
 
 app.MapControllers();
 

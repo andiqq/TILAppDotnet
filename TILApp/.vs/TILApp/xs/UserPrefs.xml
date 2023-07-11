@@ -1,0 +1,58 @@
+﻿<Properties StartupConfiguration="{396BAFE4-5C84-4699-86DA-4B4DD3745CA5}|http">
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.TILApp PreferredExecutionTarget="/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Pages/Shared/_Layout.cshtml.css">
+    <Files>
+      <File FileName="Program.cs" Line="34" Column="22" />
+      <File FileName="Properties/launchSettings.json" Line="14" Column="29" />
+      <File FileName="appsettings.json" Line="12" Column="2" />
+      <File FileName="Controllers/AcronymController.cs" Line="26" Column="1" />
+      <File FileName="Controllers/UserController.cs" />
+      <File FileName="Models/Acronym.cs" />
+      <File FileName="Models/User.cs" />
+      <File FileName="Models/Category.cs" />
+      <File FileName="Migrations/20221129042539_InitialCreate.cs" />
+      <File FileName="Migrations/20221129042539_InitialCreate.Designer.cs" />
+      <File FileName="Data/AcronymContext.cs" />
+      <File FileName="../../../../../usr/local/share/dotnet/sdk/7.0.304/Microsoft.Common.CurrentVersion.targets" Line="4752" Column="5" />
+      <File FileName="Index.cshtml" Line="1" Column="1" />
+      <File FileName="Pages/_ViewImports.cshtml" Line="1" Column="1" />
+      <File FileName="Pages/_ViewStart.cshtml" Line="1" Column="1" />
+      <File FileName="Pages/Shared/_Layout.cshtml" Line="1" Column="1" />
+      <File FileName="Pages/Shared/_Layout.cshtml.css" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="TILApp">
+            <Node name="TILApp">
+              <Node name="Dependencies" expanded="True" />
+              <Node name="Controllers" expanded="True" />
+              <Node name="Data" expanded="True" />
+              <Node name="Models" expanded="True" />
+              <Node name="Pages" expanded="True">
+                <Node name="Acronyms" expanded="True" />
+                <Node name="Shared" expanded="True">
+                  <Node name="_Layout.cshtml" expanded="True">
+                    <Node name="_Layout.cshtml.css" selected="True" />
+                  </Node>
+                </Node>
+                <Node name="Index.cshtml" expanded="True" />
+              </Node>
+              <Node name="Properties" expanded="True" />
+              <Node name="wwwroot" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

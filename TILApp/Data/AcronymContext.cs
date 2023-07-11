@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TILApp.Models;
 
 public class AcronymContext : DbContext
 {
@@ -9,4 +10,5 @@ public class AcronymContext : DbContext
     public DbSet<User> User { get; set; }
 
     public DbSet<Category> Category { get; set; }
+
 }

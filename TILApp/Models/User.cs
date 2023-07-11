@@ -1,25 +1,30 @@
-﻿public class User
+﻿namespace TILApp.Models
 {
-    public int Id { get; set; }
-    public string? Name { get; set; }
-    public string? UserName { get; set; }
 
-    public ICollection<Acronym>? Acronyms { get; set; } 
-}
-
-public class UserDto
-{
-    public int Id { get; set; }
-    public string? Name { get; set; }
-    public string? UserName { get; set; }
-
-    public static UserDto convertedFrom(User user)
+    public class User
     {
-        return new UserDto() { Id = user.Id, Name = user.Name, UserName = user.UserName };
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? UserName { get; set; }
+
+        public ICollection<Acronym>? Acronyms { get; set; }
     }
 
-    public static List<UserDto> convertedFrom(List<User> users)
+    public class UserDto
     {
-        return users.Select(a => convertedFrom(a)).OrderBy(i => i.Id).ToList();
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? UserName { get; set; }
+
+        public static UserDto convertedFrom(User user)
+        {
+            return new UserDto() { Id = user.Id, Name = user.Name, UserName = user.UserName };
+        }
+
+        public static List<UserDto> convertedFrom(List<User> users)
+        {
+            return users.Select(a => convertedFrom(a)).OrderBy(i => i.Id).ToList();
+        }
     }
+
 }

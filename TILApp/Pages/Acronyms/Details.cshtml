@@ -1,0 +1,31 @@
+@page
+@model TILApp.Pages.Acronyms.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@Model.Acronym.Short</h1>
+<h2>@Model.Acronym.Long</h2>
+
+<p>Created by <a asp-page="/Users/Details" asp-route-id="@Model.Acronym.UserId">@Model.Acronym.User.Name</a></p>
+
+
+@if (Model.Acronym.Categories.Count() > 0)
+{
+    <h3>Categories</h3>
+
+    @foreach (var category in Model.Acronym.Categories)
+    {
+        <li>
+            <a asp-page="/Categories/Details" asp-route-id="@category.Id">@category.Name</a>
+        </li>
+    }
+}
+
+<div>
+    <a class="btn btn-primary" asp-page="./Edit" asp-route-id="@Model.Acronym?.Id" role="button">Edit</a>
+    <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@Model.Acronym?.Id" role="button">Delete</a>
+</div>
+
+<div><a asp-page="Index">Return</a></div>

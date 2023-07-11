@@ -1,0 +1,43 @@
+@page
+@model TILApp.Pages.Acronyms.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<img src="/images/logo.png" class="mx-auto d-block" alt="TIL Logo" />
+
+<h1>Acronyms</h1>
+
+@if (Model.Acronyms.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Short</th>
+                <th>Long</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var acronym in Model.Acronyms)
+            {
+                <tr>
+                    <td><a asp-page="./Details" asp-route-id="@acronym.Id">@acronym.Short</a></td>
+                    <td>@acronym.Long</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <a asp-page="Create">Create a new acronym</a>
+    </div>
+}
+else
+{
+    <h2>There aren't any acronyms yet!</h2>
+}
+
+
+

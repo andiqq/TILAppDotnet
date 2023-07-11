@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TILApp.Models;
 
 namespace TILApp.Controllers
 {
@@ -19,6 +20,7 @@ namespace TILApp.Controllers
         public async Task<ActionResult<IEnumerable<AcronymDto>>> GetAcronym()
         {
             if (db.Acronym == null) return NotFound();
+            
             return AcronymDto.convertedFrom(await db.Acronym.ToListAsync());
         }
 
@@ -26,24 +28,24 @@ namespace TILApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AcronymDto>> GetAcronym(int id)
         {
-            if (db.Acronym == null) return NotFound(); 
-
+            if (db.Acronym == null) return NotFound();
             var acronym = await db.Acronym.FindAsync(id);
-
             if (acronym == null) return NotFound();
-
-             return AcronymDto.convertedFrom(acronym);
+            return AcronymDto.convertedFrom(acronym);
         }
 
         // GET: api/Acronym/5/Categories
         [HttpGet("{id}/Categories")]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories(int id)
         {
-            if (db.Acronym == null) return NotFound(); 
+            if (db.Acronym == null) return NotFound();
 
-            var acronym = await db.Acronym.Where(i => i.Id == id).Include(i => i.Categories).FirstOrDefaultAsync();
+            var acronym = await db.Acronym
+                .Where(i => i.Id == id)
+                .Include(i => i.Categories)
+                .FirstOrDefaultAsync();
 
-            if (acronym == null || acronym.Categories == null || acronym.Categories.Count == 0 ) return NotFound();
+            if (acronym == null || acronym.Categories == null || acronym.Categories.Count == 0) return NotFound();
 
             return acronym.Categories.Select(a => CategoryDto.convertedFrom(a)).OrderBy(i => i.Id).ToList();
         }
@@ -52,16 +54,11 @@ namespace TILApp.Controllers
         [HttpGet("{id}/User")]
         public async Task<ActionResult<UserDto>> GetAcronymUser(int id)
         {
-            if (db.Acronym == null) return NotFound(); 
-
+            if (db.Acronym == null) return NotFound();
             var acronym = await db.Acronym.FindAsync(id);
-
-            if (acronym == null) return NotFound(); 
-
+            if (acronym == null) return NotFound();
             var user = await db.User.FindAsync(acronym.UserId);
-
             if (user == null) return NotFound();
-                       
             return UserDto.convertedFrom(user);
         }
 
@@ -98,7 +95,7 @@ namespace TILApp.Controllers
             acronym.Long = dto.Long;
             acronym.Short = dto.Short;
             acronym.UserId = dto.UserId;
- 
+
             // _context.Entry(acronym).State = EntityState.Modified;
             db.Acronym.Update(acronym);
 
@@ -109,23 +106,19 @@ namespace TILApp.Controllers
                 else { throw; }
             }
 
-            return Ok(AcronymDto.convertedFrom(acronym));     
+            return Ok(AcronymDto.convertedFrom(acronym));
         }
 
         // PUT: api/Acronym/5/User
         [HttpPut("{id}/User")]
-        public async Task <IActionResult> UpdateUser(int id, int userid)
+        public async Task<IActionResult> UpdateUser(int id, int userid)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).FirstAsync();
-
-            if (acronym == null)  return BadRequest();
-
+            if (acronym == null) return BadRequest();
             var user = await db.User.Where(i => i.Id == userid).FirstAsync();
-
-            if (user == null) return BadRequest(); 
-
+            if (user == null) return BadRequest();
             acronym.UserId = userid;
-            
+
             db.Acronym.Update(acronym);
             await db.SaveChangesAsync();
 
@@ -138,15 +131,10 @@ namespace TILApp.Controllers
         public async Task<IActionResult> AddCategory(int id, int catid)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).Include(a => a.Categories).FirstAsync();
-
-            if (acronym == null) return BadRequest(); 
-
+            if (acronym == null) return BadRequest();
             var category = await db.Category.Where(i => i.Id == catid).FirstAsync();
-
             if (category == null) return BadRequest();
-
             acronym.Categories.Add(category);
-           
             db.Acronym.Update(acronym);
             await db.SaveChangesAsync();
 
@@ -158,7 +146,7 @@ namespace TILApp.Controllers
         [HttpPost]
         public async Task<ActionResult<Acronym>> PostAcronym(AcronymDto dto)
         {
-            if (db.Acronym == null) return Problem("Entity set 'AcronymContext.Acronym'  is null."); 
+            if (db.Acronym == null) return Problem("Entity set 'AcronymContext.Acronym'  is null.");
 
             var acronym = new Acronym() { Long = dto.Long, Short = dto.Short, UserId = dto.UserId };
 
@@ -172,11 +160,11 @@ namespace TILApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAcronym(int id)
         {
-            if (db.Acronym == null) return NotFound(); 
+            if (db.Acronym == null) return NotFound();
 
             var acronym = await db.Acronym.FindAsync(id);
 
-            if (acronym == null) return NotFound(); 
+            if (acronym == null) return NotFound();
 
             db.Acronym.Remove(acronym);
             await db.SaveChangesAsync();
@@ -204,7 +192,7 @@ namespace TILApp.Controllers
             return NoContent();
         }
 
-        
+
 
         private bool AcronymExists(int id)
         {
