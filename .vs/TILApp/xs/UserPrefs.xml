@@ -1,14 +1,10 @@
 ﻿<Properties GitUserInfo="UsingGIT" StartupConfiguration="{2387B877-F0CA-442F-9B03-D660EB819612}|http">
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.TILAppTest PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.ItemProperties.TILApp PreferredExecutionTarget="/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="TILApp/Models/Acronym.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TILApp/Pages/Acronyms/Index.cshtml">
     <Files>
       <File FileName="TILApp/Program.cs" />
-      <File FileName="TILApp/Controllers/AcronymController.cs" Line="1" Column="1" />
       <File FileName="TILApp/Controllers/UserController.cs" />
       <File FileName="TILApp/Controllers/CategoryController.cs" />
-      <File FileName="TILApp/Models/Acronym.cs" Line="1" Column="1" />
+      <File FileName="TILApp/Models/Acronym.cs" />
       <File FileName="TILApp/Data/AcronymContext.cs" />
       <File FileName="TILApp/Models/Category.cs" />
       <File FileName="TILApp/Models/User.cs" />
@@ -18,31 +14,60 @@
       <File FileName="TILAppTest/CategoryConvertTest.cs" />
       <File FileName="TILApp/Migrations/20221210182241_ManyToMany.cs" />
       <File FileName="TILApp/Migrations/20221210182241_ManyToMany.Designer.cs" />
+      <File FileName="TILApp/Pages/Index.cshtml.cs" />
+      <File FileName="TILApp/Pages/Index.cshtml" />
+      <File FileName="TILApp/Pages/Privacy.cshtml.cs" />
+      <File FileName="TILApp/Pages/Error.cshtml" />
+      <File FileName="TILApp/Pages/Error.cshtml.cs" />
+      <File FileName="TILApp/Pages/Privacy.cshtml" />
+      <File FileName="TILApp/Pages/_ViewImports.cshtml" />
+      <File FileName="TILApp/Pages/_ViewStart.cshtml" />
+      <File FileName="TILApp/Pages/Shared/_Layout.cshtml" />
+      <File FileName="TILApp/Pages/Shared/_Layout.cshtml.css" />
+      <File FileName="TILApp/Pages/Shared/_ValidationScriptsPartial.cshtml" />
+      <File FileName="TILApp/Properties/launchSettings.json" />
+      <File FileName="TILApp/TILApp.csproj" />
+      <File FileName="TILApp/Pages/Acronyms/Index.cshtml" Line="57" Column="1" />
+      <File FileName="TILApp/Pages/Acronyms/Index.cshtml.cs" />
+      <File FileName="TILApp/Pages/Acronyms/Edit.cshtml" />
+      <File FileName="TILApp/Pages/Acronyms/Details.cshtml" />
+      <File FileName="TILApp/Pages/Acronyms/Details.cshtml.cs" />
+      <File FileName="TILApp/Pages/Acronyms/Create.cshtml" />
+      <File FileName="TILApp/Pages/Acronyms/Delete.cshtml" />
+      <File FileName="TILApp/Pages/Acronyms/Create.cshtml.cs" />
+      <File FileName="TILApp/Pages/Acronyms/Edit.cshtml.cs" />
+      <File FileName="TILApp/Pages/Users/Create.cshtml.cs" />
+      <File FileName="TILApp/Pages/Users/Edit.cshtml.cs" />
+      <File FileName="TILApp/Dockerfile" />
+      <File FileName="docker-compose.override.yml" />
+      <File FileName="docker-compose.yml" />
+      <File FileName="TILApp/appsettings.json" />
+      <File FileName="TILApp/Controllers/AcronymController.cs" />
+      <File FileName="TILApp/Pages/Users/Delete.cshtml.cs" />
+      <File FileName="TILApp/Pages/Users/Details.cshtml.cs" />
+      <File FileName="TILApp/Pages/Users/Index.cshtml.cs" />
+      <File FileName="TILApp/Pages/Scaffolding/Index.cshtml" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="TILApp" expanded="True">
-            <Node name="TILApp">
-              <Node name="Dependencies" expanded="True" />
-              <Node name="Controllers" expanded="True">
-                <Node name="AcronymController.cs" selected="True" />
-              </Node>
+            <Node name="TILApp" expanded="True" selected="True">
+              <Node name="Controllers" expanded="True" />
               <Node name="Data" expanded="True" />
-              <Node name="Migrations" expanded="True" />
-              <Node name="Models" expanded="True" />
             </Node>
           </Node>
         </State>
       </Pad>
-      <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State />
-      </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.TILApp PreferredExecutionTarget="/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.ItemProperties.TILAppTest PreferredExecutionTarget="MonoDevelop.Default" />
   <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.docker-compose PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
 </Properties>

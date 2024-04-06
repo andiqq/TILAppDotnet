@@ -1,7 +1,8 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TILApp.Models;
 
-public class AcronymContext : DbContext
+public class AcronymContext : IdentityDbContext<User>
 {
     public AcronymContext(DbContextOptions<AcronymContext> options) : base(options) { }
 

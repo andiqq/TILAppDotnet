@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TILApp.Models;
@@ -17,25 +18,25 @@ namespace TILApp.Controllers
 
         // GET: api/Category
         [HttpGet]
-        public async Task<ActionResult<ICollection<CategoryDto>>> GetCategory()
+        public async Task<ActionResult<ICollection<Category.CDto>>> GetCategory()
         {
             if (db.Category == null) return NotFound();
-            return CategoryDto.convertedFrom(await db.Category.ToListAsync());
+            return new Category.CDto().List(await db.Category.ToListAsync());
         }
 
         // GET: api/Category/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoryDto>> GetCategory(int id)
+        public async Task<ActionResult<Category.CDto>> GetCategory(int id)
         {
             if (db.Category == null) return NotFound();
             var category = await db.Category.FindAsync(id);
             if (category == null) return NotFound();
-            return CategoryDto.convertedFrom(category);
+            return new Category.CDto(category);
         }
 
         // GET: api/Category/5/Acronyms
         [HttpGet("{id}/Acronyms")]
-        public async Task<ActionResult<IEnumerable<AcronymDto>>> GetAcronym(int id)
+        public async Task<ActionResult<IEnumerable<Acronym.Dto>>> GetAcronym(int id)
         {
             if (db.Category == null) return NotFound();
 
@@ -46,13 +47,13 @@ namespace TILApp.Controllers
 
             if (category == null || category.Acronyms == null) return NotFound();
 
-            return category.Acronyms.Select(a => AcronymDto.convertedFrom(a)).OrderBy(i => i.Id).ToList();
+            return category.Acronyms.Select(a => new Acronym.Dto(a)).OrderBy(i => i.Id).ToList();
         }
 
         // PUT: api/Category/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, CategoryDto dto)
+        [HttpPut("{id}"), Authorize]
+        public async Task<IActionResult> PutCategory(int id, Category.CDto dto)
         {
             var category = await db.Category.Where(i => i.Id == id).FirstAsync();
 
@@ -70,13 +71,13 @@ namespace TILApp.Controllers
                 else throw;
             }
 
-            return Ok(CategoryDto.convertedFrom(category));
+            return Ok(new Category.CDto(category));
         }
 
         // POST: api/Category
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(CategoryDto dto)
+        [HttpPost, Authorize]
+        public async Task<ActionResult<Category>> PostCategory(Category.CDto dto)
         {
             if (db.Category == null) return Problem("Entity set 'AcronymContext.Category' is null.");
 
@@ -85,11 +86,11 @@ namespace TILApp.Controllers
             db.Category.Add(category);
             await db.SaveChangesAsync();
 
-            return CreatedAtAction("GetCategory", new { id = dto.Id }, dto);
+            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
         }
 
         // DELETE: api/Category/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             if (db.Category == null) return NotFound();

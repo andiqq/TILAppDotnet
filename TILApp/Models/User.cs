@@ -1,30 +1,31 @@
-﻿namespace TILApp.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace TILApp.Models;
+
+public class User : IdentityUser
 {
+    public string? Name { get; set; } = String.Empty;
 
-    public class User
+    public ICollection<Acronym>? Acronyms { get; set; }
+
+    public class Public
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? UserName { get; set; }
+        public string? Id { get; set; }
+        public string? Name { get; set; } = String.Empty;
+        public string? UserName { get; set; } = String.Empty;
 
-        public ICollection<Acronym>? Acronyms { get; set; }
-    }
+        public Public() { }
 
-    public class UserDto
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? UserName { get; set; }
-
-        public static UserDto convertedFrom(User user)
+        public Public(User user)
         {
-            return new UserDto() { Id = user.Id, Name = user.Name, UserName = user.UserName };
+            Id = user.Id;
+            Name = user.Name;
+            UserName = user.UserName;
         }
 
-        public static List<UserDto> convertedFrom(List<User> users)
+        public List<Public> List(List<User> users)
         {
-            return users.Select(a => convertedFrom(a)).OrderBy(i => i.Id).ToList();
+            return users.Select(a => new Public(a)).OrderBy(i => i.Id).ToList();
         }
     }
-
 }

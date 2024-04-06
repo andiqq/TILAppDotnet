@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TILApp.Models;
@@ -17,76 +18,66 @@ namespace TILApp.Controllers
 
         // GET: api/Acronym
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AcronymDto>>> GetAcronym()
+        public async Task<ActionResult<IEnumerable<Acronym.Dto>>> GetAcronym()
         {
             if (db.Acronym == null) return NotFound();
             
-            return AcronymDto.convertedFrom(await db.Acronym.ToListAsync());
+            return Ok(new Acronym.Dto().List(await db.Acronym.ToListAsync()));
         }
 
         // GET: api/Acronym/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AcronymDto>> GetAcronym(int id)
+        public async Task<ActionResult<Acronym.Dto>> GetAcronym(int id)
         {
-            if (db.Acronym == null) return NotFound();
+            // if (db.Acronym == null) return NotFound();
             var acronym = await db.Acronym.FindAsync(id);
-            if (acronym == null) return NotFound();
-            return AcronymDto.convertedFrom(acronym);
+            return (acronym != null) ? Ok(new Acronym.Dto(acronym)) : NotFound();
         }
 
         // GET: api/Acronym/5/Categories
         [HttpGet("{id}/Categories")]
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories(int id)
+        public async Task<ActionResult<IEnumerable<Category.CDto>>> GetCategories(int id)
         {
-            if (db.Acronym == null) return NotFound();
+            // if (db.Acronym == null) return NotFound();
 
             var acronym = await db.Acronym
                 .Where(i => i.Id == id)
                 .Include(i => i.Categories)
                 .FirstOrDefaultAsync();
-
-            if (acronym == null || acronym.Categories == null || acronym.Categories.Count == 0) return NotFound();
-
-            return acronym.Categories.Select(a => CategoryDto.convertedFrom(a)).OrderBy(i => i.Id).ToList();
+            return (acronym == null || acronym.Categories == null) ? NotFound() : Ok(new Category.CDto().List(acronym.Categories.ToList()));
         }
 
         // GET: api/Acronym/5/User
         [HttpGet("{id}/User")]
-        public async Task<ActionResult<UserDto>> GetAcronymUser(int id)
+        public async Task<ActionResult<User.Public>> GetAcronymUser(int id)
         {
             if (db.Acronym == null) return NotFound();
             var acronym = await db.Acronym.FindAsync(id);
             if (acronym == null) return NotFound();
             var user = await db.User.FindAsync(acronym.UserId);
             if (user == null) return NotFound();
-            return UserDto.convertedFrom(user);
+            return new User.Public(user);
         }
 
         // GET: api/Acronym/search?Term=OMG
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<AcronymDto>>> SearchAcronym(string Term)
-        {
-            return AcronymDto.convertedFrom(await db.Acronym.Where(a => a.Short == Term || a.Long == Term).ToListAsync());
-        }
+        public async Task<ActionResult<IEnumerable<Acronym.Dto>>> SearchAcronym(string Term)
+        { return new Acronym.Dto().List(await db.Acronym.Where(a => a.Short == Term || a.Long == Term).ToListAsync()); }
 
         // GET: api/Acronym/first
         [HttpGet("first")]
-        public async Task<ActionResult<AcronymDto>> FindFirstAcronym()
-        {
-            return AcronymDto.convertedFrom(await db.Acronym.FirstAsync());
-        }
+        public async Task<ActionResult<Acronym.Dto>> FindFirstAcronym()
+        { return new Acronym.Dto(await db.Acronym.FirstAsync()); }
 
         // GET: api/Acronym/sort
         [HttpGet("sort")]
-        public async Task<ActionResult<IEnumerable<AcronymDto>>> SortAcronym()
-        {
-            return AcronymDto.convertedFrom(await db.Acronym.OrderBy(a => a.Short).ToListAsync());
-        }
+        public async Task<ActionResult<IEnumerable<Acronym.Dto>>> SortAcronym()
+        { return new Acronym.Dto().List(await db.Acronym.OrderBy(a => a.Short).ToListAsync()); }
 
         // PUT: api/Acronym/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAcronym(int id, AcronymDto dto)
+        public async Task<IActionResult> PutAcronym(int id, Acronym.Dto dto)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).FirstAsync();
 
@@ -106,12 +97,12 @@ namespace TILApp.Controllers
                 else { throw; }
             }
 
-            return Ok(AcronymDto.convertedFrom(acronym));
+            return Ok(new Acronym.Dto(acronym));
         }
 
         // PUT: api/Acronym/5/User
-        [HttpPut("{id}/User")]
-        public async Task<IActionResult> UpdateUser(int id, int userid)
+        [HttpPut("{id}/User"), Authorize]
+        public async Task<IActionResult> UpdateUser(int id, string? userid)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).FirstAsync();
             if (acronym == null) return BadRequest();
@@ -122,29 +113,30 @@ namespace TILApp.Controllers
             db.Acronym.Update(acronym);
             await db.SaveChangesAsync();
 
-            return Ok(AcronymDto.convertedFrom(acronym));
+            return Ok(new Acronym.Dto(acronym));
 
         }
 
         // PUT: api/Acronym/5/Category
-        [HttpPut("{id}/Category")]
+        [HttpPut("{id}/Category"), Authorize]
         public async Task<IActionResult> AddCategory(int id, int catid)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).Include(a => a.Categories).FirstAsync();
             if (acronym == null) return BadRequest();
             var category = await db.Category.Where(i => i.Id == catid).FirstAsync();
             if (category == null) return BadRequest();
-            acronym.Categories.Add(category);
+            _ = acronym.Categories.Append(category);
+            //acronym.Categories.Add(category);
             db.Acronym.Update(acronym);
             await db.SaveChangesAsync();
 
-            return Ok(AcronymDto.convertedFrom(acronym));
+            return Ok(new Acronym.Dto(acronym));
         }
 
         // POST: api/Acronym
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Acronym>> PostAcronym(AcronymDto dto)
+        [HttpPost, Authorize]
+        public async Task<ActionResult<Acronym>> PostAcronym(Acronym.Dto dto)
         {
             if (db.Acronym == null) return Problem("Entity set 'AcronymContext.Acronym'  is null.");
 
@@ -153,11 +145,12 @@ namespace TILApp.Controllers
             db.Acronym.Add(acronym);
             await db.SaveChangesAsync();
 
-            return CreatedAtAction("GetAcronym", new { id = dto.Id }, dto);
+           // return CreatedAtAction("GetAcronym", new { id = dto.Id }, dto);
+           return CreatedAtAction("GetAcronym", new { id = acronym.Id }, acronym);
         }
 
         // DELETE: api/Acronym/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<IActionResult> DeleteAcronym(int id)
         {
             if (db.Acronym == null) return NotFound();
@@ -173,7 +166,7 @@ namespace TILApp.Controllers
         }
 
         // DELETE: api/Acronym/5/Category
-        [HttpDelete("{id}/Category")]
+        [HttpDelete("{id}/Category"), Authorize]
         public async Task<IActionResult> DeleteCategory(int id, int catid)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).Include(a => a.Categories).FirstAsync();
@@ -185,14 +178,12 @@ namespace TILApp.Controllers
             if (category == null || acronym.Categories == null) return BadRequest();
 
             acronym.Categories.Remove(category);
-
+           
             db.Acronym.Update(acronym);
             await db.SaveChangesAsync();
 
             return NoContent();
         }
-
-
 
         private bool AcronymExists(int id)
         {

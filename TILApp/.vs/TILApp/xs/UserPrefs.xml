@@ -1,45 +1,67 @@
 ﻿<Properties StartupConfiguration="{396BAFE4-5C84-4699-86DA-4B4DD3745CA5}|http">
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.ItemProperties.TILApp PreferredExecutionTarget="/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Pages/Shared/_Layout.cshtml.css">
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Controllers/AcronymController.cs">
     <Files>
-      <File FileName="Program.cs" Line="34" Column="22" />
-      <File FileName="Properties/launchSettings.json" Line="14" Column="29" />
-      <File FileName="appsettings.json" Line="12" Column="2" />
-      <File FileName="Controllers/AcronymController.cs" Line="26" Column="1" />
-      <File FileName="Controllers/UserController.cs" />
-      <File FileName="Models/Acronym.cs" />
-      <File FileName="Models/User.cs" />
-      <File FileName="Models/Category.cs" />
+      <File FileName="Program.cs" Line="39" Column="1" />
+      <File FileName="Properties/launchSettings.json" Line="1" Column="1" />
+      <File FileName="appsettings.json" Line="1" Column="1" />
+      <File FileName="Controllers/AcronymController.cs" Line="54" Column="37" />
+      <File FileName="Controllers/UserController.cs" Line="47" Column="74" />
+      <File FileName="Models/Acronym.cs" Line="38" Column="2" />
+      <File FileName="Models/User.cs" Line="31" Column="1" />
       <File FileName="Migrations/20221129042539_InitialCreate.cs" />
       <File FileName="Migrations/20221129042539_InitialCreate.Designer.cs" />
-      <File FileName="Data/AcronymContext.cs" />
-      <File FileName="../../../../../usr/local/share/dotnet/sdk/7.0.304/Microsoft.Common.CurrentVersion.targets" Line="4752" Column="5" />
-      <File FileName="Index.cshtml" Line="1" Column="1" />
-      <File FileName="Pages/_ViewImports.cshtml" Line="1" Column="1" />
-      <File FileName="Pages/_ViewStart.cshtml" Line="1" Column="1" />
-      <File FileName="Pages/Shared/_Layout.cshtml" Line="1" Column="1" />
-      <File FileName="Pages/Shared/_Layout.cshtml.css" Line="1" Column="1" />
+      <File FileName="Data/AcronymContext.cs" Line="1" Column="1" />
+      <File FileName="../../../../../usr/local/share/dotnet/sdk/7.0.304/Microsoft.Common.CurrentVersion.targets" />
+      <File FileName="Pages/_ViewImports.cshtml" />
+      <File FileName="Pages/_ViewStart.cshtml" />
+      <File FileName="Pages/Shared/_Layout.cshtml" />
+      <File FileName="Pages/Shared/_Layout.cshtml.css" />
+      <File FileName="Controllers/CategoryController.cs" Line="28" Column="16" />
+      <File FileName="Pages/Acronyms/Create.cshtml" Line="1" Column="1" />
+      <File FileName="Pages/Acronyms/Create.cshtml.cs" Line="1" Column="7" />
+      <File FileName="Pages/Acronyms/Index.cshtml" Line="26" Column="68" />
+      <File FileName="Pages/Index.cshtml" Line="1" Column="1" />
+      <File FileName="Pages/Index.cshtml.cs" Line="1" Column="1" />
+      <File FileName="Pages/Acronyms/Edit.cshtml" Line="29" Column="97" />
+      <File FileName="Pages/Acronyms/Index.cshtml.cs" Line="23" Column="38" />
+      <File FileName="Pages/Acronyms/Edit.cshtml.cs" Line="38" Column="26" />
+      <File FileName="Models/Category.cs" Line="28" Column="2" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="TILApp">
             <Node name="TILApp">
-              <Node name="Dependencies" expanded="True" />
-              <Node name="Controllers" expanded="True" />
-              <Node name="Data" expanded="True" />
+              <Node name="Controllers">
+                <Node name="AcronymController.cs" selected="True" />
+              </Node>
               <Node name="Models" expanded="True" />
-              <Node name="Pages" expanded="True">
-                <Node name="Acronyms" expanded="True" />
-                <Node name="Shared" expanded="True">
-                  <Node name="_Layout.cshtml" expanded="True">
-                    <Node name="_Layout.cshtml.css" selected="True" />
-                  </Node>
+              <Node name="Pages">
+                <Node name="Acronyms" expanded="True">
+                  <Node name="Create.cshtml" expanded="True" />
+                  <Node name="Edit.cshtml" expanded="True" />
+                  <Node name="Index.cshtml" expanded="True" />
                 </Node>
+                <Node name="Categories" expanded="True">
+                  <Node name="Create.cshtml" expanded="True" />
+                </Node>
+                <Node name="Scaffolding" expanded="True">
+                  <Node name="Edit.cshtml" expanded="True" />
+                  <Node name="Index.cshtml" expanded="True" />
+                </Node>
+                <Node name="Shared" expanded="True">
+                  <Node name="_Layout.cshtml" expanded="True" />
+                </Node>
+                <Node name="Users" expanded="True" />
                 <Node name="Index.cshtml" expanded="True" />
               </Node>
-              <Node name="Properties" expanded="True" />
               <Node name="wwwroot" expanded="True" />
             </Node>
           </Node>
@@ -50,9 +72,4 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MultiItemStartupConfigurations />
 </Properties>
