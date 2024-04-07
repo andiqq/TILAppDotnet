@@ -12,6 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AcronymContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("AcronymContext")));
 
+builder.Services.AddControllersWithViews();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
     {
@@ -51,7 +53,11 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllers();
+// app.MapControllers();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 

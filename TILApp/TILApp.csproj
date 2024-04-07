@@ -41,7 +41,6 @@
     <None Remove="Pages\Scaffolding\" />
     <None Remove="Models\MyUser" />
     <None Remove="Views\UserMVC\**" />
-    <None Remove="Views\**" />
     <None Remove="Pages\**" />
   </ItemGroup>
   <ItemGroup>
@@ -54,20 +53,14 @@
   <ItemGroup>
     <Content Remove="wwwroot\images\" />
     <Content Remove="Views\UserMVC\**" />
-    <Content Remove="Views\**" />
     <Content Remove="Pages\**" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Models\MyUser.cs" />
     <Compile Remove="Views\UserMVC\**" />
-    <Compile Remove="Views\**" />
     <Compile Remove="Controllers\UserMVC.cs" />
-    <Compile Remove="Pages\**" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Views\UserMVC\**" />
-    <EmbeddedResource Remove="Views\**" />
-    <EmbeddedResource Remove="Pages\**" />
   </ItemGroup>
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\UserMVC\Create.cshtml" />
@@ -75,36 +68,8 @@
     <_ContentIncludedByDefault Remove="Views\UserMVC\Details.cshtml" />
     <_ContentIncludedByDefault Remove="Views\UserMVC\Edit.cshtml" />
     <_ContentIncludedByDefault Remove="Views\UserMVC\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Shared\_Layout.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\_ValidationScriptsPartial.cshtml" />
     <_ContentIncludedByDefault Remove="Views\_ViewImports.cshtml" />
     <_ContentIncludedByDefault Remove="Views\_ViewStart.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Acronyms\Create.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Acronyms\Delete.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Acronyms\Details.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Acronyms\Edit.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Acronyms\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Categories\Create.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Categories\Delete.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Categories\Details.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Categories\Edit.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Categories\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Error.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Privacy.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Scaffolding\Create.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Scaffolding\Delete.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Scaffolding\Details.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Scaffolding\Edit.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Scaffolding\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Shared\_Layout.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Shared\_ValidationScriptsPartial.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Users\Create.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Users\Delete.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Users\Details.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Users\Edit.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\Users\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\_ViewImports.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\_ViewStart.cshtml" />
   </ItemGroup>
 </Project>
