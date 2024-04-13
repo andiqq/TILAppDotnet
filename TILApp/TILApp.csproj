@@ -44,7 +44,6 @@
     <None Remove="Pages\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
   <ItemGroup>
