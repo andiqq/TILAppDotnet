@@ -71,7 +71,7 @@ namespace TILApp.Controllers
 
         // PUT: api/Acronym/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}"), Authorize]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutAcronym(int id, Acronym.Dto dto)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).FirstAsync();
@@ -113,15 +113,16 @@ namespace TILApp.Controllers
         }
 
         // PUT: api/Acronym/5/Category
-        [HttpPut("{id}/Category"), Authorize]
+        [HttpPut("{id}/Category")]
         public async Task<IActionResult> AddCategory(int id, int catid)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).Include(a => a.Categories).FirstAsync();
             if (acronym == null) return BadRequest();
             var category = await db.Category.Where(i => i.Id == catid).FirstAsync();
             if (category == null) return BadRequest();
-            _ = acronym.Categories.Append(category);
-            //acronym.Categories.Add(category);
+            
+            //_ = acronym.Categories.Append(category);
+            acronym.Categories.Add(category);
             db.Acronym.Update(acronym);
             await db.SaveChangesAsync();
 

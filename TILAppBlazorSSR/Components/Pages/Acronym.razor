@@ -1,0 +1,122 @@
+@page "/edit-acronym/{Id:int}"
+@page "/edit-acronym"
+@using Microsoft.EntityFrameworkCore
+
+@inject AcronymContext Context
+
+@if (CurrentAcronym == null)
+{
+<p><em>Loading Acronyms ...</em></p>
+}
+
+@if (Id is null)
+{
+    <PageTitle>Add Acronym</PageTitle>
+    <h3>Add a New Acronym</h3>
+}
+else
+{
+    <PageTitle>Edit Acronym"</PageTitle>
+    <h3>Edit "@CurrentAcronym.Short"</h3>
+}
+
+<EditForm Enhance Model="CurrentAcronym" OnSubmit="HandleSubmit" FormName="AcronymForm">
+    <div>
+        <label for="short">Short</label>
+        <InputText id="short" @bind-Value="CurrentAcronym.Short" class="form-control"/>
+    </div>
+    <div>
+        <label for="long">Long</label>
+        <InputText id="long" @bind-Value="CurrentAcronym.Long" class="form-control"/>
+    </div>
+    <div>
+        <label for="userID">User</label>
+        <InputSelect id="userId" @bind-Value="CurrentAcronym.UserId" class="form-control">
+            @foreach (var user in users)
+            {
+                <option value="@user.Id">@user.Name</option>
+            }
+        </InputSelect>
+    </div>
+    
+    <div>
+        <label for="categories">Categories</label>
+        <Select class="form-control" id="categories" @bind="CurrentAcronym.Categories" multiple>
+                @foreach (var category in categories)
+                {
+                    <option value="@category.Name">@category.Name</option>
+                }
+        </Select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+<p>@status</p>
+
+@code {
+    [Parameter] public int? Id { get; set; } = null;
+
+    [SupplyParameterFromForm] public TILApp.Models.Acronym CurrentAcronym { get; set; } = new();
+
+    List<User> users = [];
+    List<Category> categories = [];
+    List<Category>? currentCategories = [];
+
+    User currentUser = new();
+
+    private string status = String.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        users = await Context.User.ToListAsync();
+        categories = await Context.Category.Include(a => a.Acronyms).ToListAsync();
+        
+        if (Id is not null)
+        {
+            var acronym = await Context.Acronym.FindAsync(Id);
+            currentUser = users.First(u => u.Id == acronym?.UserId);
+            currentCategories = CurrentAcronym.Categories as List<Category>;
+            if (acronym is not null)
+            {
+                CurrentAcronym.Short ??= acronym.Short;
+                CurrentAcronym.Long ??= acronym.Long;
+                CurrentAcronym.UserId ??= acronym.UserId;
+             //   CurrentAcronym.Categories ??= acronym.Categories;
+            }
+        }
+    }
+
+    async Task HandleSubmit()
+    {
+        if (Id is not null)
+        {
+            await UpdateAcronym();
+        }
+        else
+        {
+            await CreateAcronym();
+        }
+    }
+
+    async Task UpdateAcronym()
+    {
+        var acronym = await Context.Acronym.FindAsync(Id);
+        acronym.Long = CurrentAcronym.Long;
+        acronym.Short = CurrentAcronym.Short;
+        acronym.UserId = CurrentAcronym.UserId;
+        
+       var result = await Context.SaveChangesAsync();
+       
+        status = result == 1 ? "Acronym edited successfully" : "Something went wrong... :/";
+    }
+
+    async Task CreateAcronym()
+    {
+        Context.Acronym.Add(CurrentAcronym);
+        var result = await Context.SaveChangesAsync();
+
+        status = result == 1 ? "Acronym added successfully" : "Something went wrong... :/";
+    }
+
+}

@@ -1,5 +1,69 @@
-<h3>AcronymsTable</h3>
+@using Microsoft.EntityFrameworkCore
+@inject AcronymContext Context
+@attribute [StreamRendering]
+
+@if (acronyms.Count == 0)
+{
+    <p><em>Loading Acronyms ...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Short</th>
+            <th>Long</th>
+            <th>User</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        
+        <tbody>
+        @foreach (var acronym in acronyms)
+        {
+            <tr>
+                <td><a href="/edit-acronym/@acronym.Id">@acronym.Short</a></td>
+                <td>@acronym.Long</td>
+                <td>@acronym.User.Name</td>
+
+                <td>
+                    <form method="post" data-enhance
+                          @formname="@($"DeleteAcronymForm{acronym.Id}")"
+                          @onsubmit="() => DeleteAcronym(acronym.Id)">
+                        <button class="btn btn-danger">
+                            Delete
+                        </button>
+                        <AntiforgeryToken />
+                    </form>
+                </td>
+
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<a href="/edit-acronym">Add an Acronym</a>
 
 @code {
+
+    List<TILApp.Models.Acronym> acronyms = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        acronyms = await Context.Acronym.Include(a => a.User).ToListAsync();
+    }
     
+    async Task DeleteAcronym(int id)
+    {
+        var acronym = await Context.Acronym.FindAsync(id);
+        if (acronym is not null)
+        {
+            Context.Remove(acronym);
+            await Context.SaveChangesAsync();
+            acronyms = await Context.Acronym.ToListAsync();
+        }
+    }
+
 }
