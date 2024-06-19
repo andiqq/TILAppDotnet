@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TILApp.Models;
-
 namespace TILApp.Controllers
 {
     [Route("api/[controller]")]

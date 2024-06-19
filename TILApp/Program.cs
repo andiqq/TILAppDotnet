@@ -1,9 +1,9 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using TILApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // --> Configure Services
 

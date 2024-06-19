@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using TILApp.Models;
 
 public class AcronymContext : IdentityDbContext<User>
 {

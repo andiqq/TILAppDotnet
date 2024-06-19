@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TILApp.Models;
-
 namespace TILApp.Controllers
 {
     [Route("api/[controller]")]
@@ -76,7 +71,7 @@ namespace TILApp.Controllers
 
         // PUT: api/Acronym/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutAcronym(int id, Acronym.Dto dto)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).FirstAsync();

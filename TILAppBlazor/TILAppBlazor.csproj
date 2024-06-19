@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-BlazorApp1-1F92711C-E802-43C7-A146-A27D1757550B</UserSecretsId>
+        <RootNamespace>BlazorApp1</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="Data\app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.6"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6"/>
+    </ItemGroup>
+
+</Project>

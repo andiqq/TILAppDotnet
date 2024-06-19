@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using TILApp.Models;
 
 namespace TILApp.Controllers;
 
