@@ -1,6 +1,9 @@
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
 @inject AcronymContext Context
+@inject NavigationManager NM
 @attribute [StreamRendering]
+
 
 @if (acronyms.Count == 0)
 {
@@ -8,43 +11,31 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Short</th>
-            <th>Long</th>
-            <th>User</th>
-            <th></th>
-            <th></th>
-        </tr>
-        </thead>
+    <QuickGrid Class="table" Items="Context.Acronym">
         
-        <tbody>
-        @foreach (var acronym in acronyms)
-        {
-            <tr>
-                <td><a href="/edit-acronym/@acronym.Id">@acronym.Short</a></td>
-                <td>@acronym.Long</td>
-                <td>@acronym.User.Name</td>
-
-                <td>
-                    <form method="post" data-enhance
-                          @formname="@($"DeleteAcronymForm{acronym.Id}")"
-                          @onsubmit="() => DeleteAcronym(acronym.Id)">
-                        <button class="btn btn-danger">
-                            Delete
-                        </button>
-                        <AntiforgeryToken />
-                    </form>
-                </td>
-
-            </tr>
-        }
-        </tbody>
-    </table>
+        <PropertyColumn Property="acronym => acronym.Short"/>
+        <PropertyColumn Property="acronym => acronym.Long"/>
+        
+        <TemplateColumn Context="acronym">
+            <a href="edit-acronym/@acronym.Id">Edit</a> |
+            <a href="@($"acronyms/details?id={acronym.Id}")">Details</a>
+        </TemplateColumn>
+        
+        <TemplateColumn Context="acronym">
+            <form method="post" data-enhance
+                  @formname="@($"DeleteAcronymForm{acronym.Id}")"
+                  @onsubmit="() => DeleteAcronym(acronym.Id)">
+                <button class="btn btn-danger">
+                    Delete
+                </button>
+                <AntiforgeryToken/>
+            </form>
+        </TemplateColumn>
+        
+    </QuickGrid>
+    
+    <a href="/edit-acronym">Add an Acronym</a>
 }
-
-<a href="/edit-acronym">Add an Acronym</a>
 
 @code {
 
@@ -63,6 +54,7 @@ else
             Context.Remove(acronym);
             await Context.SaveChangesAsync();
             acronyms = await Context.Acronym.ToListAsync();
+            NM.NavigateTo("/", true);
         }
     }
 

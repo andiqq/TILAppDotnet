@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TILAppBlazorSSR.Components;
 using TILAppBlazorSSR.Components.Account;
-using TILAppBlazorSSR.Data;
 using TILApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,10 +27,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddDbContext<AcronymContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("AcronymContext")));
 
-// var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-//                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//     options.UseSqlite(connectionString));
+builder.Services.AddQuickGridEntityFrameworkAdapter();
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedAccount = true)

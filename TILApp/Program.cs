@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -11,8 +12,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AcronymContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("AcronymContext")));
-
-builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
