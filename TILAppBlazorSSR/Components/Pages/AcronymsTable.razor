@@ -42,9 +42,7 @@ else
     List<TILApp.Models.Acronym> acronyms = [];
 
     protected override async Task OnInitializedAsync()
-    {
-        acronyms = await Context.Acronym.Include(a => a.User).ToListAsync();
-    }
+    { acronyms = await Context.Acronym.Include(a => a.User).ToListAsync(); }
     
     async Task DeleteAcronym(int id)
     {
@@ -54,7 +52,7 @@ else
             Context.Remove(acronym);
             await Context.SaveChangesAsync();
             acronyms = await Context.Acronym.ToListAsync();
-            NM.NavigateTo("/", true);
+            NM.Refresh();
         }
     }
 
