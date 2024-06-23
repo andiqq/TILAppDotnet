@@ -3,13 +3,14 @@
 @inject AcronymContext Context
 @inject NavigationManager NM
 @attribute [StreamRendering]
+@namespace TILAppBlazorSSR.Components.Pages
 
-@if (acronyms.Count == 0)
-{ <p><em>Loading Acronyms ...</em></p> }
+@if (acronyms is null)
+{ <p><em>There are not any acronyms yet ...</em></p> }
 
 else
 {
-    <QuickGrid Class="table align-middle" Items="Context.Acronym">
+    <QuickGrid Class="table align-middle" Items="acronyms">
         
         <PropertyColumn Property="acronym => acronym.Short"/>
         <PropertyColumn Property="acronym => acronym.Long"/>
@@ -36,18 +37,17 @@ else
 }
 
 @code {
+
+    [Parameter] public IQueryable<Acronym> acronyms { get; set; } 
     
-    [Parameter]
-    public List<TILApp.Models.Acronym> acronyms { get; set; }
-    
-    async Task DeleteAcronym(int id)
+    public async Task DeleteAcronym(int id)
     {
         var acronym = await Context.Acronym.FindAsync(id);
         if (acronym is not null)
         {
             Context.Remove(acronym);
             await Context.SaveChangesAsync();
-            acronyms = await Context.Acronym.ToListAsync();
+            acronyms = Context.Acronym;
             NM.Refresh();
         }
     }

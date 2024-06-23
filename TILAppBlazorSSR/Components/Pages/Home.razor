@@ -11,12 +11,12 @@
 <AcronymsTable acronyms="acronyms"/>
 
 @code {
-    
-    List<TILApp.Models.Acronym> acronyms = [];
+
+    IQueryable<Acronym> acronyms;
 
     protected override async Task OnInitializedAsync()
     {
-        acronyms = await Context.Acronym.Include(a => a.User).ToListAsync();
+        acronyms = Context.Acronym.Include(a => a.User);
     }
 
 }

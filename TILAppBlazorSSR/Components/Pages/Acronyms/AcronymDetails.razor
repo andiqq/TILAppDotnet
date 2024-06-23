@@ -1,0 +1,61 @@
+@page "/acronym-details/{Id:int}"
+@using Microsoft.EntityFrameworkCore
+@inject NavigationManager NM
+@inject AcronymContext DB
+@attribute [StreamRendering]
+
+<PageTitle>Details</PageTitle>
+
+@if (acronym == null)
+{
+    <p>
+        <em>Loading Acronyms ...</em>
+    </p>
+}
+else
+{
+    <h1>@acronym.Short</h1>
+    <h2>@acronym.Long</h2>
+    <p>Created by @user.Name</p>
+
+    @if (categories.Count > 0)
+    {
+        <h3>Categories</h3>
+        @foreach (var category in categories)
+        {
+            <li>
+                @category.Name
+            </li>
+        }
+    }
+    <EditForm method="post" Model="acronym" OnValidSubmit="DeleteAcronym" FormName="delete" Enhance>
+        <a class="btn btn-primary" href="edit-acronym/@acronym.Id" role="button">Edit</a>&nbsp;
+        <button type="submit" class="btn btn-danger" disabled="@(acronym is null)">Delete</button>
+    </EditForm>
+}
+
+@code {
+    [SupplyParameterFromForm] public Acronym? acronym { get; set; } = new();
+
+    User user = new();
+    ICollection<Category> categories = [];
+
+    [Parameter] public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        acronym = await DB.Acronym.FirstOrDefaultAsync(a => a.Id == Id);
+        user = await DB.User.FirstOrDefaultAsync(u => u.Id == acronym.UserId);
+        DB.Entry(acronym).Collection(a => a.Categories).Load();
+        categories = acronym.Categories;
+    }
+
+    public async Task DeleteAcronym()
+    {
+        DB.Acronym.Remove(acronym);
+        await DB.SaveChangesAsync();
+        NM.NavigateTo("/");
+    }
+
+}
+

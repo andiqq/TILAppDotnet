@@ -1,0 +1,62 @@
+@page "/Users"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@inject AcronymContext DB
+@inject NavigationManager NM
+@attribute [StreamRendering]
+
+<h1>All Users</h1>
+
+@if (users is null)
+{
+<p><em>There are not any users yet ...</em></p>
+}
+else
+{
+    <QuickGrid class="table align-middle" Items="DB.User">
+        
+        <PropertyColumn Property="user => user.UserName"/>
+        <PropertyColumn Property="user => user.Name"/>
+        
+        <TemplateColumn Context="user">
+            <form method="post" data-enhance
+                  @formname="@($"DeleteAcronymForm{user.Id}")"
+                  @onsubmit="() => DeleteUser(user.Id)">
+
+                <a class="btn btn-primary" href="acronym-details/@user.Id" role="button">Details</a>&nbsp;
+                <a class="btn btn-secondary" href="edit-acronym/@user.Id" role="button">Edit</a>&nbsp;
+                <button class="btn btn-danger">
+                    Delete
+                </button>
+                <AntiforgeryToken/>
+
+            </form>
+        </TemplateColumn>
+        
+
+    </QuickGrid>
+}
+
+@code {
+    public List<User> users { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await DB.User.ToListAsync();
+    }
+    
+    async Task DeleteUser(string id)
+    {
+        var acronym = await DB.User.FindAsync(id);
+        if (acronym is not null)
+        {
+            DB.Remove(acronym);
+            await DB.SaveChangesAsync();
+            users = await DB.User.ToListAsync();
+            NM.Refresh();
+        }
+    }
+    
+    
+    
+}
