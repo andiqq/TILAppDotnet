@@ -2,7 +2,7 @@
 @page "/edit-acronym"
 @using Microsoft.EntityFrameworkCore
 
-@inject AcronymContext Context
+@inject AcronymContext DB
 
 @if (CurrentAcronym == null)
 {
@@ -84,15 +84,15 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        users = await Context.User.ToListAsync();
-        categories = await Context.Category.ToListAsync();
+        users = await DB.User.ToListAsync();
+        categories = await DB.Category.ToListAsync();
         
         if (Id is not null)
         {
-            var acronym = await Context.Acronym.Where( a => a.Id == Id).Include(a => a.Categories).AsSplitQuery().FirstAsync();
+            var acronym = await DB.Acronym.Where( a => a.Id == Id).Include(a => a.Categories).AsSplitQuery().FirstAsync();
             currentUser = users.First(u => u.Id == acronym?.UserId);
             currentCategories ??= (CurrentAcronym.Categories ?? []).ToList();
-            Context.Entry(acronym).Collection(a => a.Categories).Load();
+            DB.Entry(acronym).Collection(a => a.Categories).Load();
             if (acronym is not null)
             {
                 CurrentAcronym.Short ??= acronym.Short;
@@ -117,21 +117,21 @@ else
 
     async Task UpdateAcronym()
     {
-        var acronym = await Context.Acronym.FindAsync(Id);
+        var acronym = await DB.Acronym.FindAsync(Id);
         acronym.Long = CurrentAcronym.Long;
         acronym.Short = CurrentAcronym.Short;
         acronym.UserId = CurrentAcronym.UserId;
         acronym.Categories = CurrentAcronym.Categories;
         
-       var result = await Context.SaveChangesAsync();
+       var result = await DB.SaveChangesAsync();
        
         status = result == 1 ? "Acronym edited successfully" : "Something went wrong... :/";
     }
 
     async Task CreateAcronym()
     {
-        Context.Acronym.Add(CurrentAcronym);
-        var result = await Context.SaveChangesAsync();
+        DB.Acronym.Add(CurrentAcronym);
+        var result = await DB.SaveChangesAsync();
 
         status = result == 1 ? "Acronym added successfully" : "Something went wrong... :/";
     }

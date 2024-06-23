@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using Microsoft.EntityFrameworkCore
+@inject AcronymContext Context
 
 <PageTitle>Acronyms</PageTitle>
 
@@ -6,4 +8,15 @@
 
 <h1>Acronyms</h1>
 
-<AcronymsTable/>
+<AcronymsTable acronyms="acronyms"/>
+
+@code {
+    
+    List<TILApp.Models.Acronym> acronyms = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        acronyms = await Context.Acronym.Include(a => a.User).ToListAsync();
+    }
+
+}
