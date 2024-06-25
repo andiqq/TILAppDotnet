@@ -1,0 +1,31 @@
+@page "/user-details/{Id}"
+@using Microsoft.EntityFrameworkCore
+@inject AcronymContext DB
+@attribute [StreamRendering]
+
+<PageTitle>User Details</PageTitle>
+
+@if (user == null)
+{
+    <p><em>Loading User ...</em></p>
+}
+else
+{
+    <h1>@user.Name</h1>
+    <h2>@user.UserName</h2>
+    <AcronymsTable acronyms="acronyms"/>
+}
+
+@code {
+    [SupplyParameterFromForm] public User? user { get; set; } = new();
+    IQueryable<Acronym> acronyms;
+
+    [Parameter] public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await DB.User.FirstOrDefaultAsync(u => u.Id == Id);
+        acronyms = DB.Acronym.Where(a => a.UserId == Id);
+    }
+
+}

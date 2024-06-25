@@ -5,41 +5,43 @@
 @attribute [StreamRendering]
 @namespace TILAppBlazorSSR.Components.Pages
 
-@if (acronyms is null)
-{ <p><em>There are not any acronyms yet ...</em></p> }
+    @if (acronyms == null || !acronyms.Any())
+    {
+        <p>
+            <em>There aren't any Acronyms yet</em>
+        </p>
+    }
+    else
+    {
+        <QuickGrid Class="table align-middle" Items="acronyms">
 
-else
-{
-    <QuickGrid Class="table align-middle" Items="acronyms">
-        
-        <PropertyColumn Property="acronym => acronym.Short"/>
-        <PropertyColumn Property="acronym => acronym.Long"/>
-        <PropertyColumn Property="acronym => acronym.User.Name"/>
-        
-        <TemplateColumn Context="acronym">
-            <form method="post" data-enhance
-                  @formname="@($"DeleteAcronymForm{acronym.Id}")"
-                  @onsubmit="() => DeleteAcronym(acronym.Id)">
-                
-                <a class="btn btn-primary" href="acronym-details/@acronym.Id" role="button">Details</a>&nbsp;
-                <a class="btn btn-secondary" href="edit-acronym/@acronym.Id" role="button">Edit</a>&nbsp;
-                <button class="btn btn-danger">
-                    Delete
-                </button>
-                <AntiforgeryToken/>
-                
-            </form>
-        </TemplateColumn>
-        
-    </QuickGrid>
-    
-    <a href="/edit-acronym">Add an Acronym</a>
-}
+            <PropertyColumn Property="acronym => acronym.Short"/>
+            <PropertyColumn Property="acronym => acronym.Long"/>
+            <PropertyColumn Property="acronym => acronym.User.Name"/>
+
+            <TemplateColumn Context="acronym">
+                <form method="post" data-enhance
+                      @formname="@($"DeleteAcronymForm{acronym.Id}")"
+                      @onsubmit="() => DeleteAcronym(acronym.Id)">
+
+                    <a class="btn btn-primary" href="acronym-details/@acronym.Id" role="button">Details</a>&nbsp;
+                    <a class="btn btn-secondary" href="edit-acronym/@acronym.Id" role="button">Edit</a>&nbsp;
+                    <button class="btn btn-danger">
+                        Delete
+                    </button>
+                    <AntiforgeryToken/>
+
+                </form>
+            </TemplateColumn>
+
+        </QuickGrid>
+    }
+
 
 @code {
 
-    [Parameter] public IQueryable<Acronym> acronyms { get; set; } 
-    
+    [Parameter] public IQueryable<Acronym> acronyms { get; set; }
+
     public async Task DeleteAcronym(int id)
     {
         var acronym = await Context.Acronym.FindAsync(id);
@@ -51,4 +53,5 @@ else
             NM.Refresh();
         }
     }
+
 }
