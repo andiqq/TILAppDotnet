@@ -13,11 +13,11 @@ namespace TILApp.Controllers
 
         // GET: api/Acronym
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Acronym.Dto>>> GetAcronym()
+        public async Task<ActionResult<List<Acronym.Dto>>> GetAcronym()
         {
-            if (db.Acronym == null) return NotFound();
-            
-            return Ok(new Acronym.Dto().List(await db.Acronym.ToListAsync()));
+            return (db.Acronym.Any()) 
+                ? Ok(new Acronym.Dto().List(await db.Acronym.ToListAsync()))
+                : NotFound();
         }
 
         // GET: api/Acronym/5
@@ -35,11 +35,12 @@ namespace TILApp.Controllers
         {
             // if (db.Acronym == null) return NotFound();
 
-            var acronym = await db.Acronym
-                .Where(i => i.Id == id)
-                .Include(i => i.Categories)
-                .FirstOrDefaultAsync();
-            return (acronym == null || acronym.Categories == null) ? NotFound() : Ok(new Category.CDto().List(acronym.Categories.ToList()));
+            var acronym = await db.Acronym.AsNoTracking()
+                .Include(a => a.Categories)
+                .FirstOrDefaultAsync(a => a.Id == id);
+            return (acronym == null || acronym.Categories == null) 
+                ? NotFound() 
+                : Ok(new Category.CDto().List(acronym.Categories.ToList()));
         }
 
         // GET: api/Acronym/5/User
