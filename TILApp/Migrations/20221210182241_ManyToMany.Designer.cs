@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TILApp.Migrations
 {
-    [DbContext(typeof(AcronymContext))]
+    [DbContext(typeof(Context))]
     [Migration("20221210182241_ManyToMany")]
     partial class ManyToMany
     {

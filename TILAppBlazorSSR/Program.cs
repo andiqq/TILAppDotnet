@@ -25,7 +25,7 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-builder.Services.AddDbContext<AcronymContext>(options =>
+builder.Services.AddDbContext<Context>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("AcronymContext")));
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
@@ -34,7 +34,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<AcronymContext>()
+    .AddEntityFrameworkStores<Context>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 

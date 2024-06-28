@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using TILApp.Models;
-using TILAppBlazorSSR.Data;
 
 namespace TILAppBlazorSSR.Components.Account;
 

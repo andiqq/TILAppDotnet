@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace TILApp.Migrations
 {
-    [DbContext(typeof(AcronymContext))]
+    [DbContext(typeof(Context))]
     [Migration("20221129042539_InitialCreate")]
     partial class InitialCreate
     {

@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TILAppBlazorSSR", "TILAppBlazorSSR\TILAppBlazorSSR.csproj", "{D62CABBB-D04F-4805-BD78-818636CE5EC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TILAppMinimal", "TILAppMinimal\TILAppMinimal.csproj", "{C45F353E-5348-4E1A-828E-B7607431DD16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,11 +28,17 @@ Global
 		{D62CABBB-D04F-4805-BD78-818636CE5EC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D62CABBB-D04F-4805-BD78-818636CE5EC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D62CABBB-D04F-4805-BD78-818636CE5EC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C45F353E-5348-4E1A-828E-B7607431DD16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C45F353E-5348-4E1A-828E-B7607431DD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C45F353E-5348-4E1A-828E-B7607431DD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C45F353E-5348-4E1A-828E-B7607431DD16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {008C7A90-8C0D-4495-A48F-9A6A8C3818C8}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

@@ -1,16 +1,13 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
-
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 // --> Configure Services
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<AcronymContext>(options =>
+builder.Services.AddDbContext<Context>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("AcronymContext")));
 
 builder.Services.AddEndpointsApiExplorer();
@@ -28,13 +25,13 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddIdentityApiEndpoints<User>()
-    .AddEntityFrameworkStores<AcronymContext>();
+    .AddEntityFrameworkStores<Context>();
 
 var app = builder.Build();
 
 // --> Middleware Pipeline
 
-app.Services.CreateScope().ServiceProvider.GetRequiredService<AcronymContext>().Database.Migrate();
+app.Services.CreateScope().ServiceProvider.GetRequiredService<Context>().Database.Migrate();
 
 if (app.Environment.IsDevelopment())
 {

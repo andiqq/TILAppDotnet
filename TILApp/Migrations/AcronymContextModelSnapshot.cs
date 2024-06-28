@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TILApp.Migrations
 {
-    [DbContext(typeof(AcronymContext))]
+    [DbContext(typeof(Context))]
     partial class AcronymContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

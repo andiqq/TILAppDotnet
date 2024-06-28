@@ -4,9 +4,9 @@ namespace TILApp.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly AcronymContext db;
+        private readonly Context db;
 
-        public CategoryController(AcronymContext context)
+        public CategoryController(Context context)
         {
             db = context;
         }

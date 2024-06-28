@@ -2,9 +2,9 @@ namespace TILApp.Controllers
 {
     public class CategoryViewController : Controller
     {
-        private readonly AcronymContext _context;
+        private readonly Context _context;
 
-        public CategoryViewController(AcronymContext context)
+        public CategoryViewController(Context context)
         {
             _context = context;
         }

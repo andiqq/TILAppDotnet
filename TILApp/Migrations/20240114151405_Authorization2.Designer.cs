@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TILApp.Migrations
 {
-    [DbContext(typeof(AcronymContext))]
+    [DbContext(typeof(Context))]
     [Migration("20240114151405_Authorization2")]
     partial class Authorization2
     {

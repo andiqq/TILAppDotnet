@@ -4,9 +4,9 @@ namespace TILApp.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly AcronymContext db;
+        private readonly Context db;
 
-        public UserController(AcronymContext context)
+        public UserController(Context context)
         {
             db = context;
         }

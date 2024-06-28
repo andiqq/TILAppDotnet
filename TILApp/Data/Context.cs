@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-public class AcronymContext : IdentityDbContext<User>
+public class Context : IdentityDbContext<User>
 {
-    public AcronymContext(DbContextOptions<AcronymContext> options) : base(options) { }
+    public Context(DbContextOptions<Context> options) : base(options) { }
 
     public DbSet<Acronym> Acronym { get; set; }
 

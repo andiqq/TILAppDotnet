@@ -9,7 +9,6 @@ using Microsoft.Extensions.Primitives;
 using TILApp.Models;
 using TILAppBlazorSSR.Components.Account.Pages;
 using TILAppBlazorSSR.Components.Account.Pages.Manage;
-using TILAppBlazorSSR.Data;
 
 namespace Microsoft.AspNetCore.Routing;
 
