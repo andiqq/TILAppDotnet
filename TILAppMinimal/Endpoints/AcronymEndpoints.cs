@@ -19,27 +19,23 @@ public static class AcronymEndpoints
         // GET: minimalapi/Acronym/5
         group.MapGet("{id}",
                 async Task<Results<Ok<Acronym.Dto>, NotFound>> (int id, Context db) =>
-                {
-                    var acronym = await db.Acronym.AsNoTracking()
-                        .FirstOrDefaultAsync(a => a.Id == id);
-                    return acronym != null
+                    await db.Acronym.AsNoTracking()
+                            .FirstOrDefaultAsync(a => a.Id == id)
+                        is { } acronym
                         ? TypedResults.Ok(new Acronym.Dto(acronym))
-                        : TypedResults.NotFound();
-                })
+                        : TypedResults.NotFound())
             .WithName("GetAcronymById")
             .WithOpenApi();
 
         //GET: minimalapi/Acronym/5/categories
         group.MapGet("{id}/Categories",
                 async Task<Results<Ok<List<Category.CDto>>, NotFound>> (int id, Context db) =>
-                {
-                    var acronym = await db.Acronym.AsNoTracking()
-                        .Include(a => a.Categories)
-                        .FirstOrDefaultAsync(a => a.Id == id);
-                    return acronym is not null
+                    await db.Acronym.AsNoTracking()
+                            .Include(a => a.Categories)
+                            .FirstOrDefaultAsync(a => a.Id == id)
+                        is { } acronym
                         ? TypedResults.Ok(new Category.CDto().List(acronym.Categories.ToList()))
-                        : TypedResults.NotFound();
-                })
+                        : TypedResults.NotFound())
             .WithName("GetAcronymCategories")
             .WithOpenApi();
 
@@ -48,14 +44,14 @@ public static class AcronymEndpoints
                 async Task<Results<Ok<User.Public>, NotFound>> (int id, Context db) =>
                 {
                     if (db.Acronym is null) return TypedResults.NotFound();
-                    var acronym = await db.Acronym.FindAsync(id);
 
-                    if (acronym is null) return TypedResults.NotFound();
-                    var user = await db.User.FindAsync(acronym.UserId);
+                    var acronym = await db.Acronym.AsNoTracking()
+                        .Include(a => a.User)
+                        .FirstOrDefaultAsync(a => a.Id == id);
 
-                    return user is null
+                    return acronym is null || acronym.User is null
                         ? TypedResults.NotFound()
-                        : TypedResults.Ok(new User.Public(user));
+                        : TypedResults.Ok(new User.Public(acronym.User));
                 })
             .WithName("GetAcronymUser")
             .WithOpenApi();
@@ -79,26 +75,46 @@ public static class AcronymEndpoints
         // GET: minimalapi/Acronym/first
         group.MapGet("first",
                 async Task<Results<Ok<Acronym.Dto>, NotFound>> (Context db) =>
-                {
-                    var acronym = await db.Acronym.AsNoTracking().FirstAsync();
-                    return acronym is not null
+                    await db.Acronym.AsNoTracking().FirstAsync()
+                        is { } acronym
                         ? TypedResults.Ok(new Acronym.Dto(acronym))
-                        : TypedResults.NotFound();
-                })
+                        : TypedResults.NotFound())
             .WithName("GetFirstAcronym")
             .WithOpenApi();
-        
+
         // GET: minimalapi/Acronym/sort
         group.MapGet("sort",
-            async Task<Results<Ok<List<Acronym.Dto>>, NotFound>> (Context db) =>
-            {
-                if (db.Acronym is null) return TypedResults.NotFound();
-                return TypedResults.Ok(
-                    new Acronym.Dto().List(
-                        await db.Acronym.OrderBy(a => a.Short).ToListAsync())
-                );
-            })
+                async Task<Results<Ok<List<Acronym.Dto>>, NotFound>> (Context db) => 
+                    db.Acronym is null
+                    ? TypedResults.NotFound()
+                    : TypedResults.Ok(new Acronym.Dto().List(
+                        await db.Acronym.AsNoTracking()
+                            .OrderBy(a => a.Short)
+                            .ToListAsync())
+                    ))
             .WithName("SortAcronyms")
+            .WithOpenApi();
+        
+       // PUT: minimalapi/Acronym/5
+        group.MapPut("{id}",
+            async Task<Results<Ok, BadRequest, NotFound>> (int id, Acronym.Dto acronym, Context db) =>
+            {
+                if (await db.Acronym.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id) is null)
+                    return TypedResults.NotFound();
+                if (await db.User.AsNoTracking().FirstOrDefaultAsync(u => u.Id == acronym.UserId) is null) 
+                    return TypedResults.BadRequest();
+                
+                var affected = await db.Acronym
+                    .Where(a => a.Id == id)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(m => m.Id, acronym.Id)
+                        .SetProperty(m => m.Long, acronym.Long)
+                        .SetProperty(m => m.Short, acronym.Short)
+                        .SetProperty(m => m.UserId, acronym.UserId)
+                    );
+                return affected == 1 ? TypedResults.Ok() : TypedResults.BadRequest();
+            })
+            .WithName("UpdateAcronym")
             .WithOpenApi();
     }
 }

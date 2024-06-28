@@ -29,7 +29,7 @@ namespace TILApp.Models
                 UserId = acronym.UserId;
             }
 
-            public List<Dto> List(List<Acronym> acronyms)
+            public List<Dto>? List(List<Acronym> acronyms)
             {
                 return acronyms.Select(a => new Dto(a)).OrderBy(i => i.Id).ToList();
             }
