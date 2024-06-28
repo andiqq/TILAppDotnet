@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-public class Context : IdentityDbContext<User>
-{
-    public Context(DbContextOptions<Context> options) : base(options) { }
+namespace TILApp.Data;
 
+public class Context(DbContextOptions<Context> options) : IdentityDbContext<User>(options)
+{
     public DbSet<Acronym> Acronym { get; set; }
 
     public DbSet<User> User { get; set; }

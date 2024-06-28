@@ -1,3 +1,5 @@
+using TILApp.Data;
+
 namespace TILApp.Controllers
 {
     public class CategoryViewController : Controller

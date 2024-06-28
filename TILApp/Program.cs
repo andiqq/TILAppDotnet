@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using TILApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

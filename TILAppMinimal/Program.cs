@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TILApp.Data;
 using TILAppMinimal.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);

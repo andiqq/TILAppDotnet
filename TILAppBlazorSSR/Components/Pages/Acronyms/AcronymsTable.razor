@@ -1,10 +1,11 @@
 @using Microsoft.AspNetCore.Components.QuickGrid
+@using TILApp.Data
 @inject Context Context
 @inject NavigationManager NM
 @attribute [StreamRendering]
 @namespace TILAppBlazorSSR.Components.Pages
 
-    @if (acronyms == null || !acronyms.Any())
+    @if (Acronyms == null || !Acronyms.Any())
     {
         <p>
             <em>There aren't any Acronyms yet</em>
@@ -12,11 +13,11 @@
     }
     else
     {
-        <QuickGrid Class="table align-middle table-bordered table-hover" Items="acronyms">
+        <QuickGrid Class="table align-middle table-bordered table-hover" Items="Acronyms">
 
             <PropertyColumn Property="acronym => acronym.Short"/>
             <PropertyColumn Property="acronym => acronym.Long"/>
-            <PropertyColumn Property="acronym => acronym.User.Name"/>
+            <PropertyColumn Property="acronym => acronym.User!.Name"/>
 
             <TemplateColumn Context="acronym">
                 <form method="post" data-enhance
@@ -39,17 +40,20 @@
 
 @code {
 
-    [Parameter] public IQueryable<Acronym> acronyms { get; set; }
+    [Parameter] public IQueryable<Acronym> Acronyms { get; set; } = null!;
 
-    public async Task DeleteAcronym(int id)
+    private async Task DeleteAcronym(int id)
     {
-        var acronym = await Context.Acronym.FindAsync(id);
-        if (acronym is not null)
+        if (Context.Acronym != null)
         {
-            Context.Remove(acronym);
-            await Context.SaveChangesAsync();
-            acronyms = Context.Acronym;
-            NM.Refresh();
+            var acronym = await Context.Acronym.FindAsync(id);
+            if (acronym is not null)
+            {
+                Context.Remove(acronym);
+                await Context.SaveChangesAsync();
+                Acronyms = Context.Acronym;
+                NM.Refresh();
+            }
         }
     }
 

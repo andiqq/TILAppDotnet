@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TILApp.Data;
 using TILAppBlazorSSR.Components;
 using TILAppBlazorSSR.Components.Account;
 using TILApp.Models;

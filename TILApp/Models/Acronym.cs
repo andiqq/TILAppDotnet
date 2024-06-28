@@ -21,7 +21,7 @@ namespace TILApp.Models
 
             public Dto() { }
 
-            public Dto(Acronym acronym)
+            public Dto(Acronym? acronym)
             {
                 Id = acronym.Id;
                 Short = acronym.Short;

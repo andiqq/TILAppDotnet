@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Microsoft.EntityFrameworkCore
+@using TILApp.Data
 @inject Context Context
 
 <PageTitle>Acronyms</PageTitle>
@@ -8,7 +9,7 @@
 
 <h1>Acronyms</h1>
 
-<AcronymsTable acronyms="acronyms"/>
+<AcronymsTable Acronyms="acronyms"/>
 
 <a href="/edit-acronym">Add an Acronym</a>
 
@@ -38,11 +39,12 @@
 
 @code {
 
-    IQueryable<Acronym> acronyms;
+    IQueryable<Acronym> acronyms = null!;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
         acronyms = Context.Acronym.Include(a => a.User);
+        return Task.CompletedTask;
     }
 
 }

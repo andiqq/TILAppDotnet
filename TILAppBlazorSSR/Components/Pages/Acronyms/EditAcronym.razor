@@ -1,6 +1,7 @@
 @page "/edit-acronym/{Id:int}"
 @page "/edit-acronym"
 @using Microsoft.EntityFrameworkCore
+@using TILApp.Data
 
 @inject Context DB
 
@@ -17,13 +18,13 @@
 else
 {
     <PageTitle>Edit Acronym"</PageTitle>
-    <h3>Edit "@CurrentAcronym.Short"</h3>
+    <h3>Edit "@CurrentAcronym!.Short"</h3>
 }
 
 <EditForm Enhance Model="CurrentAcronym" OnSubmit="HandleSubmit" FormName="AcronymForm">
     <div>
         <label for="short">Short</label>
-        <InputText id="short" @bind-Value="CurrentAcronym.Short" class="form-control"/>
+        <InputText id="short" @bind-Value="CurrentAcronym!.Short" class="form-control"/>
     </div>
     <div>
         <label for="long">Long</label>
@@ -47,7 +48,7 @@ else
                 {
                     if (Id is not null)
                     {
-                        if (CurrentAcronym.Categories.Contains(category))
+                        if (CurrentAcronym.Categories!.Contains(category))
                         {
                             <option value="@category.Name" selected="selected">@category.Name</option>
                         }
@@ -72,12 +73,11 @@ else
 @code {
     [Parameter] public int? Id { get; set; } = null;
 
-    [SupplyParameterFromForm] public TILApp.Models.Acronym CurrentAcronym { get; set; } = new();
+    [SupplyParameterFromForm] public Acronym CurrentAcronym { get; set; } = new();
 
     List<User> users = [];
     List<Category> categories = [];
-    List<Category> currentCategories = [];
-
+   
     User currentUser = new();
 
     private string status = String.Empty;
@@ -91,11 +91,10 @@ else
         {
             var acronym = await DB.Acronym.Where( a => a.Id == Id).Include(a => a.Categories).AsSplitQuery().FirstAsync();
             currentUser = users.First(u => u.Id == acronym?.UserId);
-            currentCategories ??= (CurrentAcronym.Categories ?? []).ToList();
-            DB.Entry(acronym).Collection(a => a.Categories).Load();
+            await DB.Entry(acronym).Collection(a => a.Categories!).LoadAsync();
             if (acronym is not null)
             {
-                CurrentAcronym.Short ??= acronym.Short;
+                CurrentAcronym!.Short ??= acronym.Short;
                 CurrentAcronym.Long ??= acronym.Long;
                 CurrentAcronym.UserId ??= acronym.UserId;
                 CurrentAcronym.Categories ??= acronym.Categories;
@@ -118,7 +117,7 @@ else
     async Task UpdateAcronym()
     {
         var acronym = await DB.Acronym.FindAsync(Id);
-        acronym.Long = CurrentAcronym.Long;
+        acronym!.Long = CurrentAcronym.Long;
         acronym.Short = CurrentAcronym.Short;
         acronym.UserId = CurrentAcronym.UserId;
         acronym.Categories = CurrentAcronym.Categories;

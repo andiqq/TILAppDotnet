@@ -1,13 +1,14 @@
 @page "/Users"
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
+@using TILApp.Data
 @inject Context DB
 @inject NavigationManager NM
 @attribute [StreamRendering]
 
 <h1>All Users</h1>
 
-@if (users is null)
+@if (AllUsers is null)
 {
 <p><em>There are not any users yet ...</em></p>
 }
@@ -25,28 +26,23 @@ else
 }
 
 @code {
-    
-    bool rendered = false;
-    
-    public List<User> users { get; set; }
-    
+
+    private List<User> AllUsers { get; set; } = [];
+
     protected override async Task OnInitializedAsync()
     {
-        users = await DB.User.ToListAsync();
+        AllUsers = await DB.User.ToListAsync();
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        rendered = true;
         return base.OnAfterRenderAsync(true);
     }
-
-    AcronymsTable acronymsTable = default!;
     
     async Task DeleteUser(string id)
     {
         var user = await DB.User.FindAsync(id);
-        var acronyms = DB.Acronym.Where(a => a.UserId == user.Id);
+        var acronyms = DB.Acronym.Where(a => a.UserId == user!.Id);
         if (acronyms.Any())
         {
             
@@ -55,7 +51,7 @@ else
         {
             DB.Remove(user);
             await DB.SaveChangesAsync();
-            users = await DB.User.ToListAsync();
+            AllUsers = await DB.User.ToListAsync();
             NM.Refresh();
         }
     }
