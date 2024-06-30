@@ -5,37 +5,37 @@
 @attribute [StreamRendering]
 @namespace TILAppBlazorSSR.Components.Pages
 
-    @if (Acronyms == null || !Acronyms.Any())
-    {
-        <p>
-            <em>There aren't any Acronyms yet</em>
-        </p>
-    }
-    else
-    {
-        <QuickGrid Class="table align-middle table-bordered table-hover" Items="Acronyms">
+@if (Acronyms == null || !Acronyms.Any())
+{
+    <p>
+        <em>There aren't any Acronyms yet</em>
+    </p>
+}
+else
+{
+    <QuickGrid Class="table align-middle table-bordered table-hover" Items="Acronyms">
 
-            <PropertyColumn Property="acronym => acronym.Short"/>
-            <PropertyColumn Property="acronym => acronym.Long"/>
-            <PropertyColumn Property="acronym => acronym.User!.Name"/>
+        <PropertyColumn Property="acronym => acronym.Short"/>
+        <PropertyColumn Property="acronym => acronym.Long"/>
+        <PropertyColumn Property="acronym => acronym.User!.Name"/>
 
-            <TemplateColumn Context="acronym">
-                <form method="post" data-enhance
-                      @formname="@($"DeleteAcronymForm{acronym.Id}")"
-                      @onsubmit="() => DeleteAcronym(acronym.Id)">
+        <TemplateColumn Context="acronym">
+            <form method="post" data-enhance
+                  @formname="@($"DeleteAcronymForm{acronym.Id}")"
+                  @onsubmit="() => DeleteAcronym(acronym.Id)">
 
-                    <a class="btn btn-primary" href="acronym-details/@acronym.Id" role="button">Details</a>&nbsp;
+                <a class="btn btn-primary" href="acronym-details/@acronym.Id" role="button">Details</a>&nbsp;
+                <AuthorizeView>
                     <a class="btn btn-secondary" href="edit-acronym/@acronym.Id" role="button">Edit</a>&nbsp;
-                    <button class="btn btn-danger">
-                        Delete
-                    </button>
-                    <AntiforgeryToken/>
+                    <button class="btn btn-danger">Delete</button>
+                </AuthorizeView>
+                <AntiforgeryToken/>
 
-                </form>
-            </TemplateColumn>
+            </form>
+        </TemplateColumn>
 
-        </QuickGrid>
-    }
+    </QuickGrid>
+}
 
 
 @code {

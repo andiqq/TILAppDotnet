@@ -7,22 +7,18 @@ public class Category
 
     public ICollection<Acronym>? Acronyms { get; set; }
 
-    public class CDto
+    public CategoryDto toDto()
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-
-        public CDto() { }
-
-        public CDto(Category category)
-        {
-            Id = category.Id;
-            Name = category.Name;
-        }
-
-        public List<CDto> List(List<Category> categories)
-        {
-            return categories.Select(a => new CDto(a)).OrderBy(i => i.Id).ToList();
-        }
+        CategoryDto dto = new();
+        dto.Id = Id;
+        dto.Name = Name;
+        return dto;
     }
+    
+}
+
+public class CategoryDto
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
 }

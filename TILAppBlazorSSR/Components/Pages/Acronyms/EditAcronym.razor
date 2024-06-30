@@ -1,7 +1,10 @@
 @page "/edit-acronym/{Id:int}"
 @page "/edit-acronym"
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
 @using TILApp.Data
+
+@attribute [Authorize]
 
 @inject Context DB
 

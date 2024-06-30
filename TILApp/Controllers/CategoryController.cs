@@ -15,20 +15,19 @@ namespace TILApp.Controllers
 
         // GET: api/Category
         [HttpGet]
-        public async Task<ActionResult<ICollection<Category.CDto>>> GetCategory()
-        {
-            if (db.Category == null) return NotFound();
-            return new Category.CDto().List(await db.Category.ToListAsync());
-        }
+        public async Task<ActionResult<List<CategoryDto>>> GetCategory() =>
+            db.Category.Any()
+                ? Ok(await db.Category.Select(c => c.toDto()).ToListAsync())
+                : NotFound();
 
         // GET: api/Category/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category.CDto>> GetCategory(int id)
+        public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
             if (db.Category == null) return NotFound();
             var category = await db.Category.FindAsync(id);
             if (category == null) return NotFound();
-            return new Category.CDto(category);
+            return category.toDto();
         }
 
         // GET: api/Category/5/Acronyms
@@ -50,7 +49,7 @@ namespace TILApp.Controllers
         // PUT: api/Category/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}"), Authorize]
-        public async Task<IActionResult> PutCategory(int id, Category.CDto dto)
+        public async Task<IActionResult> PutCategory(int id, CategoryDto dto)
         {
             var category = await db.Category.Where(i => i.Id == id).FirstAsync();
 
@@ -68,13 +67,13 @@ namespace TILApp.Controllers
                 else throw;
             }
 
-            return Ok(new Category.CDto(category));
+            return Ok(category.toDto());
         }
 
         // POST: api/Category
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost, Authorize]
-        public async Task<ActionResult<Category>> PostCategory(Category.CDto dto)
+        public async Task<ActionResult<Category>> PostCategory(CategoryDto dto)
         {
             if (db.Category == null) return Problem("Entity set 'AcronymContext.Category' is null.");
 

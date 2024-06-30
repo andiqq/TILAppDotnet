@@ -1,5 +1,7 @@
 using TILApp.Data;
 
+// ReSharper disable ConvertTypeCheckPatternToNullCheck
+
 namespace TILApp.Controllers
 {
     [Route("api/[controller]")]
@@ -8,73 +10,68 @@ namespace TILApp.Controllers
     {
         private readonly Context db;
 
-        public AcronymController(Context context)
-        {
-            db = context;
-        }
+        public AcronymController(Context context) => db = context;
 
         // GET: api/Acronym
         [HttpGet]
-        public async Task<ActionResult<List<Acronym.Dto>>> GetAcronym()
-        {
-            return (db.Acronym.Any()) 
+        public async Task<ActionResult<List<Acronym.Dto>>> GetAcronym() =>
+            db.Acronym.Any()
                 ? Ok(new Acronym.Dto().List(await db.Acronym.ToListAsync()))
                 : NotFound();
-        }
 
         // GET: api/Acronym/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Acronym.Dto>> GetAcronym(int id)
-        {
-            // if (db.Acronym == null) return NotFound();
-            var acronym = await db.Acronym.FindAsync(id);
-            return (acronym != null) ? Ok(new Acronym.Dto(acronym)) : NotFound();
-        }
+        public async Task<ActionResult<Acronym.Dto>> GetAcronym(int id) =>
+            await db.Acronym.FindAsync(id)
+                is { } acronym
+                ? Ok(new Acronym.Dto(acronym))
+                : NotFound();
 
         // GET: api/Acronym/5/Categories
         [HttpGet("{id}/Categories")]
-        public async Task<ActionResult<IEnumerable<Category.CDto>>> GetCategories(int id)
-        {
-            // if (db.Acronym == null) return NotFound();
-
-            var acronym = await db.Acronym.AsNoTracking()
-                .Include(a => a.Categories)
-                .FirstOrDefaultAsync(a => a.Id == id);
-            return (acronym == null || acronym.Categories == null) 
-                ? NotFound() 
-                : Ok(new Category.CDto().List(acronym.Categories.ToList()));
-        }
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories(int id) =>
+            await db.Acronym.AsNoTracking()
+                    .Include(a => a.Categories)
+                    .FirstOrDefaultAsync(a => a.Id == id)
+                is { Categories.Count: not 0 } acronym
+                ? Ok(acronym.Categories.Select(c => c.toDto()).ToList())
+                : NotFound();
 
         // GET: api/Acronym/5/User
         [HttpGet("{id}/User")]
-        public async Task<ActionResult<User.Public>> GetAcronymUser(int id)
-        {
-            if (db.Acronym == null) return NotFound();
-            var acronym = await db.Acronym.FindAsync(id);
-            if (acronym == null) return NotFound();
-            var user = await db.User.FindAsync(acronym.UserId);
-            if (user == null) return NotFound();
-            return new User.Public(user);
-        }
+        public async Task<ActionResult<User.Public>> GetAcronymUser(int id) =>
+            await db.Acronym.AsNoTracking()
+                    .Include(a => a.User)
+                    .FirstOrDefaultAsync(a => a.Id == id)
+                is { User: not null } acronym
+                ? new User.Public(acronym.User)
+                : NotFound();
 
         // GET: api/Acronym/search?Term=OMG
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Acronym.Dto>>> SearchAcronym(string Term)
-        { return new Acronym.Dto().List(await db.Acronym.Where(a => a.Short == Term || a.Long == Term).ToListAsync()); }
+        public async Task<ActionResult<IEnumerable<Acronym.Dto>>> SearchAcronym(string term) => 
+            new Acronym.Dto().List(
+                await db.Acronym
+                    .Where(a => a.Short == term || a.Long == term)
+                    .ToListAsync());
 
         // GET: api/Acronym/first
         [HttpGet("first")]
         public async Task<ActionResult<Acronym.Dto>> FindFirstAcronym()
-        { return new Acronym.Dto(await db.Acronym.FirstAsync()); }
+        {
+            return new Acronym.Dto(await db.Acronym.FirstAsync());
+        }
 
         // GET: api/Acronym/sort
         [HttpGet("sort")]
         public async Task<ActionResult<IEnumerable<Acronym.Dto>>> SortAcronym()
-        { return new Acronym.Dto().List(await db.Acronym.OrderBy(a => a.Short).ToListAsync()); }
+        {
+            return new Acronym.Dto().List(await db.Acronym.OrderBy(a => a.Short).ToListAsync());
+        }
 
         // PUT: api/Acronym/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<IActionResult> PutAcronym(int id, Acronym.Dto dto)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).FirstAsync();
@@ -88,11 +85,17 @@ namespace TILApp.Controllers
             // _context.Entry(acronym).State = EntityState.Modified;
             db.Acronym.Update(acronym);
 
-            try { await db.SaveChangesAsync(); }
+            try
+            {
+                await db.SaveChangesAsync();
+            }
             catch (DbUpdateConcurrencyException)
             {
                 if (!AcronymExists(id)) return NotFound();
-                else { throw; }
+                else
+                {
+                    throw;
+                }
             }
 
             return Ok(new Acronym.Dto(acronym));
@@ -112,18 +115,17 @@ namespace TILApp.Controllers
             await db.SaveChangesAsync();
 
             return Ok(new Acronym.Dto(acronym));
-
         }
 
         // PUT: api/Acronym/5/Category
-        [HttpPut("{id}/Category")]
+        [HttpPut("{id}/Category"), Authorize]
         public async Task<IActionResult> AddCategory(int id, int catid)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).Include(a => a.Categories).FirstAsync();
             if (acronym == null) return BadRequest();
             var category = await db.Category.Where(i => i.Id == catid).FirstAsync();
             if (category == null) return BadRequest();
-            
+
             //_ = acronym.Categories.Append(category);
             acronym.Categories.Add(category);
             db.Acronym.Update(acronym);
@@ -144,8 +146,8 @@ namespace TILApp.Controllers
             db.Acronym.Add(acronym);
             await db.SaveChangesAsync();
 
-           // return CreatedAtAction("GetAcronym", new { id = dto.Id }, dto);
-           return CreatedAtAction("GetAcronym", new { id = acronym.Id }, acronym);
+            // return CreatedAtAction("GetAcronym", new { id = dto.Id }, dto);
+            return CreatedAtAction("GetAcronym", new { id = acronym.Id }, acronym);
         }
 
         // DELETE: api/Acronym/5
@@ -177,7 +179,7 @@ namespace TILApp.Controllers
             if (category == null || acronym.Categories == null) return BadRequest();
 
             acronym.Categories.Remove(category);
-           
+
             db.Acronym.Update(acronym);
             await db.SaveChangesAsync();
 
