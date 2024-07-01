@@ -8,54 +8,59 @@
 
 <h1>All Users</h1>
 
-@if (AllUsers is null)
+@if (users is null)
 {
 <p><em>There are not any users yet ...</em></p>
 }
 else
 {
-    <QuickGrid class="table align-middle" Items="DB.User">
-        
-        <PropertyColumn Property="user => user.UserName"/>
-        <PropertyColumn Property="user => user.Name"/>
-        
-        <TemplateColumn Context="user">
-          <a class="btn btn-primary" href="user-details/@user.Id" role="button">Details</a>&nbsp;
-        </TemplateColumn>
-    </QuickGrid>
+<QuickGrid class="table align-middle" Items="DB.User">
+
+    <PropertyColumn Property="user => user.UserName"/>
+    <PropertyColumn Property="user => user.Name"/>
+
+    <TemplateColumn Context="user">
+        <a class="btn btn-primary" href="user-details/@user.Id" role="button">Details</a>&nbsp;
+    </TemplateColumn>
+</QuickGrid>
 }
 
 @code {
 
-    private List<User> AllUsers { get; set; } = [];
+bool rendered = false;
 
-    protected override async Task OnInitializedAsync()
-    {
-        AllUsers = await DB.User.ToListAsync();
-    }
+public List<User> users { get; set; }
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        return base.OnAfterRenderAsync(true);
-    }
-    
-    async Task DeleteUser(string id)
-    {
-        var user = await DB.User.FindAsync(id);
-        var acronyms = DB.Acronym.Where(a => a.UserId == user!.Id);
-        if (acronyms.Any())
-        {
-            
-        }
-        if (user is not null && !acronyms.Any())
-        {
-            DB.Remove(user);
-            await DB.SaveChangesAsync();
-            AllUsers = await DB.User.ToListAsync();
-            NM.Refresh();
-        }
-    }
-    
-    
-    
+protected override async Task OnInitializedAsync()
+{
+users = await DB.User.ToListAsync();
+}
+
+protected override Task OnAfterRenderAsync(bool firstRender)
+{
+rendered = true;
+return base.OnAfterRenderAsync(true);
+}
+
+AcronymsTable acronymsTable = default!;
+
+async Task DeleteUser(string id)
+{
+var user = await DB.User.FindAsync(id);
+var acronyms = DB.Acronym.Where(a => a.UserId == user.Id);
+if (acronyms.Any())
+{
+
+}
+if (user is not null && !acronyms.Any())
+{
+DB.Remove(user);
+await DB.SaveChangesAsync();
+users = await DB.User.ToListAsync();
+NM.Refresh();
+}
+}
+
+
+
 }
