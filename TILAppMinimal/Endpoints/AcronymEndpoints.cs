@@ -111,7 +111,7 @@ public static class AcronymEndpoints
                         );
                     return affected == 1 ? Ok() : BadRequest();
                 })
-            .RequireAuthorization()
+          //  .RequireAuthorization()
             // TODO not active; .NET Identity is not yet part of the project
             .WithName("UpdateAcronym")
             .WithOpenApi();

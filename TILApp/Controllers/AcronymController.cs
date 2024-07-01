@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using TILApp.Data;
 
 // ReSharper disable ConvertTypeCheckPatternToNullCheck
@@ -6,12 +8,8 @@ namespace TILApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AcronymController : ControllerBase
+    public class AcronymController(Context db) : ControllerBase
     {
-        private readonly Context db;
-
-        public AcronymController(Context context) => db = context;
-
         // GET: api/Acronym
         [HttpGet]
         public async Task<ActionResult<List<Acronym.Dto>>> GetAcronym() =>
@@ -139,9 +137,12 @@ namespace TILApp.Controllers
         [HttpPost, Authorize]
         public async Task<ActionResult<Acronym>> PostAcronym(Acronym.Dto dto)
         {
+           var userName = HttpContext.User.Identity.Name;
+           var userId = await db.User.AsNoTracking().Where(u => u.UserName == userName).Select(u => u.Id).FirstAsync();
+            
             if (db.Acronym == null) return Problem("Entity set 'AcronymContext.Acronym'  is null.");
 
-            var acronym = new Acronym() { Long = dto.Long, Short = dto.Short, UserId = dto.UserId };
+            var acronym = new Acronym() { Long = dto.Long, Short = dto.Short, UserId = userId };
 
             db.Acronym.Add(acronym);
             await db.SaveChangesAsync();
