@@ -4,46 +4,33 @@ namespace TILApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController(Context db) : ControllerBase
     {
-        private readonly Context db;
-
-        public UserController(Context context)
-        {
-            db = context;
-        }
-
         // GET: api/User
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User.Public>>> GetUser()
+        public async Task<ActionResult<IEnumerable<User.Public>>> GetUser() =>
+            db.User.Any()
+                ? Ok(new User.Public().List(await db.User.ToListAsync()))
+                : NotFound();
+        
+        // GET: api/User/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User.Public>> GetUser(int id) =>
+            await db.User.FindAsync(id) is { } user
+                ? Ok(new User.Public(user))
+                : NotFound();
+        
+        // GET: api/User/5/Acronyms
+        [HttpGet("{id}/Acronyms")]
+        public async Task<ActionResult<IEnumerable<AcronymDto>>> GetAcronyms(string? id)
         {
             if (db.User == null) return NotFound();
 
-            return new User.Public().List(await db.User.ToListAsync());
-        }
-
-        // GET: api/User/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User.Public>> GetUser(int id)
-        {
-            if (db.User == null) return NotFound(); 
-
-            var user = await db.User.FindAsync(id);
-
-            return (user != null) ? new User.Public(user) : NotFound();
-        }
-
-        // GET: api/User/5/Acronyms
-        [HttpGet("{id}/Acronyms")]
-        public async Task<ActionResult<IEnumerable<Acronym.Dto>>> GetAcronyms(string? id)
-        {
-            if (db.User == null) return NotFound(); 
-
             var user = await db.User.Where(i => i.Id == id).Include(i => i.Acronyms).FirstOrDefaultAsync();
 
-            if (user == null || user.Acronyms == null) return NotFound();
+            if (user?.Acronyms == null) return NotFound();
 
-            return new Acronym.Dto().List(user.Acronyms.ToList());
+            return (user.Acronyms).Select(a => a.ToDto()).ToList();
         }
 
         // PUT: api/User/5
@@ -57,22 +44,24 @@ namespace TILApp.Controllers
 
             user.Name = dto.Name;
             user.UserName = dto.UserName;
-;
+            
             db.User.Update(user);
 
-            try { await db.SaveChangesAsync(); }
+            try
+            {
+                await db.SaveChangesAsync();
+            }
             catch (DbUpdateConcurrencyException)
             {
                 if (!UserExists(id)) return NotFound();
                 else throw;
             }
-
             return Ok(new User.Public(user));
         }
 
         // POST: api/User
         // POST is disabled; new Users can only be added through the identity api end point /register
-        
+
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // [HttpPost]
         // public async Task<ActionResult<User.Public>> PostUser(User.Public publicUser)
@@ -91,11 +80,11 @@ namespace TILApp.Controllers
         [HttpDelete("{id}"), Authorize]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            if (db.User == null) return NotFound(); 
+            if (db.User == null) return NotFound();
 
             var user = await db.User.FindAsync(id);
 
-            if (user == null) return NotFound(); 
+            if (user == null) return NotFound();
 
             db.User.Remove(user);
             await db.SaveChangesAsync();

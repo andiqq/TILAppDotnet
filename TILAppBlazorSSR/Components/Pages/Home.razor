@@ -43,7 +43,7 @@
 
     protected override Task OnInitializedAsync()
     {
-        acronyms = Context.Acronym.Include(a => a.User);
+        acronyms = Context.Acronym;
         return Task.CompletedTask;
     }
 

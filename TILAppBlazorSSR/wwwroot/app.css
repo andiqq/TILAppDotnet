@@ -33,7 +33,7 @@ h1:focus {
 }
 
 .validation-message {
-    color: #e50000;
+    color: #e5e500;
 }
 
 .blazor-error-boundary {
@@ -49,3 +49,5 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+

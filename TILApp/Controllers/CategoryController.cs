@@ -17,7 +17,7 @@ namespace TILApp.Controllers
         [HttpGet]
         public async Task<ActionResult<List<CategoryDto>>> GetCategory() =>
             db.Category.Any()
-                ? Ok(await db.Category.Select(c => c.toDto()).ToListAsync())
+                ? Ok(await db.Category.Select(c => c.ToDto()).ToListAsync())
                 : NotFound();
 
         // GET: api/Category/5
@@ -27,12 +27,12 @@ namespace TILApp.Controllers
             if (db.Category == null) return NotFound();
             var category = await db.Category.FindAsync(id);
             if (category == null) return NotFound();
-            return category.toDto();
+            return category.ToDto();
         }
 
         // GET: api/Category/5/Acronyms
         [HttpGet("{id}/Acronyms")]
-        public async Task<ActionResult<IEnumerable<Acronym.Dto>>> GetAcronym(int id)
+        public async Task<ActionResult<IEnumerable<AcronymDto>>> GetAcronym(int id)
         {
             if (db.Category == null) return NotFound();
 
@@ -43,7 +43,7 @@ namespace TILApp.Controllers
 
             if (category == null || category.Acronyms == null) return NotFound();
 
-            return category.Acronyms.Select(a => new Acronym.Dto(a)).OrderBy(i => i.Id).ToList();
+            return category.Acronyms.Select(a => a.ToDto()).OrderBy(i => i.Id).ToList();
         }
 
         // PUT: api/Category/5
@@ -67,7 +67,7 @@ namespace TILApp.Controllers
                 else throw;
             }
 
-            return Ok(category.toDto());
+            return Ok(category.ToDto());
         }
 
         // POST: api/Category

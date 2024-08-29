@@ -1,5 +1,3 @@
-@using Microsoft.AspNetCore.Components.QuickGrid
-@using TILApp.Data
 @inject Context Context
 @inject NavigationManager NM
 @attribute [StreamRendering]
@@ -11,20 +9,21 @@
         <em>There aren't any Acronyms yet</em>
     </p>
 }
-else
+else 
 {
-    <QuickGrid Class="table align-middle table-bordered table-hover" Items="Acronyms">
+    <QuickGrid Class="table table-striped custom-row-height" Items="Acronyms" >
 
-        <PropertyColumn Property="acronym => acronym.Short"/>
+        <TemplateColumn Title="Short">
+            <a href="acronym-details/@context.Id">@context.Short</a>
+        </TemplateColumn>
+        
         <PropertyColumn Property="acronym => acronym.Long"/>
-        <PropertyColumn Property="acronym => acronym.User!.Name"/>
 
         <TemplateColumn Context="acronym">
             <form method="post" data-enhance
                   @formname="@($"DeleteAcronymForm{acronym.Id}")"
                   @onsubmit="() => DeleteAcronym(acronym.Id)">
-
-                <a class="btn btn-primary" href="acronym-details/@acronym.Id" role="button">Details</a>&nbsp;
+                
                 <AuthorizeView>
                     <a class="btn btn-secondary" href="edit-acronym/@acronym.Id" role="button">Edit</a>&nbsp;
                     <button class="btn btn-danger">Delete</button>

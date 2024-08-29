@@ -7,14 +7,7 @@ public class Category
 
     public ICollection<Acronym>? Acronyms { get; set; }
 
-    public CategoryDto toDto()
-    {
-        CategoryDto dto = new();
-        dto.Id = Id;
-        dto.Name = Name;
-        return dto;
-    }
-    
+    public CategoryDto ToDto() => new() { Id = Id, Name = Name };
 }
 
 public class CategoryDto

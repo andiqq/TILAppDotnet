@@ -12,28 +12,16 @@ namespace TILApp.Models
 
         public ICollection<Category>? Categories { get; set; }
 
-        public class Dto
-        {
-            public int Id { get; set; }
-            public string? Short { get; set; }
-            public string? Long { get; set; }
-            public string? UserId { get; set; }
+        public AcronymDto ToDto() => new() { Id = Id, Long = Long, Short = Short, UserId = UserId };
+        
+    }
 
-            public Dto() { }
-
-            public Dto(Acronym? acronym)
-            {
-                Id = acronym.Id;
-                Short = acronym.Short;
-                Long = acronym.Long;
-                UserId = acronym.UserId;
-            }
-
-            public List<Dto>? List(List<Acronym> acronyms)
-            {
-                return acronyms.Select(a => new Dto(a)).OrderBy(i => i.Id).ToList();
-            }
-        }
+    public class AcronymDto
+    {
+        public int Id { get; set; }
+        public string? Short { get; set; }
+        public string? Long { get; set; }
+        public string? UserId { get; set; }
     }
 }
 

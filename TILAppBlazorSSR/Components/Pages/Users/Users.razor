@@ -1,66 +1,47 @@
 @page "/Users"
-@using Microsoft.AspNetCore.Components.QuickGrid
-@using Microsoft.EntityFrameworkCore
-@using TILApp.Data
 @inject Context DB
 @inject NavigationManager NM
 @attribute [StreamRendering]
 
 <h1>All Users</h1>
 
-@if (users is null)
+@if (AllUsers is null)
 {
-<p><em>There are not any users yet ...</em></p>
+    <p>
+        <em>There are not any users yet ...</em>
+    </p>
 }
 else
 {
-<QuickGrid class="table align-middle" Items="DB.User">
+    <QuickGrid class="table align-middle custom-row-height"  Items="DB.User">
 
-    <PropertyColumn Property="user => user.UserName"/>
-    <PropertyColumn Property="user => user.Name"/>
+        <PropertyColumn Property="user => user.UserName"/>
+        <PropertyColumn Property="user => user.Name"/>
 
-    <TemplateColumn Context="user">
-        <a class="btn btn-primary" href="user-details/@user.Id" role="button">Details</a>&nbsp;
-    </TemplateColumn>
-</QuickGrid>
+        
+    </QuickGrid>
 }
 
 @code {
 
-bool rendered = false;
+    public List<User> AllUsers { get; set; } = null!;
 
-public List<User> users { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        AllUsers = await DB.User.ToListAsync();
+    }
 
-protected override async Task OnInitializedAsync()
-{
-users = await DB.User.ToListAsync();
-}
-
-protected override Task OnAfterRenderAsync(bool firstRender)
-{
-rendered = true;
-return base.OnAfterRenderAsync(true);
-}
-
-AcronymsTable acronymsTable = default!;
-
-async Task DeleteUser(string id)
-{
-var user = await DB.User.FindAsync(id);
-var acronyms = DB.Acronym.Where(a => a.UserId == user.Id);
-if (acronyms.Any())
-{
-
-}
-if (user is not null && !acronyms.Any())
-{
-DB.Remove(user);
-await DB.SaveChangesAsync();
-users = await DB.User.ToListAsync();
-NM.Refresh();
-}
-}
-
+    async Task DeleteUser(string id)
+    {
+        if (await DB.User.FindAsync(id) is { } user &&
+            !DB.Acronym.Any(a => a.UserId == user.Id) )
+        {
+            DB.Remove(user);
+            await DB.SaveChangesAsync();
+            AllUsers = await DB.User.ToListAsync();
+            NM.Refresh();
+        }
+    }
 
 
 }

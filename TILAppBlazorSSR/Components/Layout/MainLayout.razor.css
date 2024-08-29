@@ -76,6 +76,17 @@ main {
     }
 }
 
+::deep .quickgrid[theme=std] {
+    line-height: 48px;
+}
+
+
+
+.topics tr {
+    line-height: 14px;
+    height: 14px;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -94,3 +105,4 @@ main {
         right: 0.75rem;
         top: 0.5rem;
     }
+    
