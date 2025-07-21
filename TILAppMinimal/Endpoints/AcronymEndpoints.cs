@@ -43,7 +43,7 @@ public static class AcronymEndpoints
             .WithOpenApi();
 
         //GET: minimalapi/Acronym/5/User
-        group.MapGet("{id}/User",
+        group.MapGet("{id:int}/User",
                 async Task<Results<Ok<User.Public>, NotFound>> (int id, Context db) =>
                     await db.Acronym.AsNoTracking()
                             .Include(a => a.User)

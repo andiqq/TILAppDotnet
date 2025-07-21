@@ -69,8 +69,6 @@ namespace TILApp.Controllers
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).FirstAsync();
 
-            if (acronym == null) return BadRequest();
-
             acronym.Long = dto.Long;
             acronym.Short = dto.Short;
             acronym.UserId = dto.UserId;
@@ -111,9 +109,7 @@ namespace TILApp.Controllers
         public async Task<IActionResult> AddCategory(int id, int catid)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).Include(a => a.Categories).FirstAsync();
-            if (acronym == null) return BadRequest();
             var category = await db.Category.Where(i => i.Id == catid).FirstAsync();
-            if (category == null) return BadRequest();
 
             //_ = acronym.Categories.Append(category);
             acronym.Categories.Add(category);
@@ -130,10 +126,8 @@ namespace TILApp.Controllers
         {
            var userName = HttpContext.User.Identity.Name;
            var userId = await db.User.AsNoTracking().Where(u => u.UserName == userName).Select(u => u.Id).FirstAsync();
-            
-            if (db.Acronym == null) return Problem("Entity set 'AcronymContext.Acronym'  is null.");
 
-            var acronym = new Acronym() { Long = dto.Long, Short = dto.Short, UserId = userId };
+           var acronym = new Acronym() { Long = dto.Long, Short = dto.Short, UserId = userId };
 
             db.Acronym.Add(acronym);
             await db.SaveChangesAsync();
@@ -145,8 +139,6 @@ namespace TILApp.Controllers
         [HttpDelete("{id:int}"), Authorize]
         public async Task<IActionResult> DeleteAcronym(int id)
         {
-            if (db.Acronym == null) return NotFound();
-
             var acronym = await db.Acronym.FindAsync(id);
 
             if (acronym == null) return NotFound();
@@ -163,11 +155,9 @@ namespace TILApp.Controllers
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).Include(a => a.Categories).FirstAsync();
 
-            if (acronym == null) return BadRequest();
-
             var category = await db.Category.Where(i => i.Id == catid).FirstAsync();
 
-            if (category == null || acronym.Categories == null) return BadRequest();
+            if (acronym.Categories == null) return BadRequest();
 
             acronym.Categories.Remove(category);
 

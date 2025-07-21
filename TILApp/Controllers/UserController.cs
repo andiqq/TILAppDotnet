@@ -24,8 +24,6 @@ namespace TILApp.Controllers
         [HttpGet("{id}/Acronyms")]
         public async Task<ActionResult<IEnumerable<AcronymDto>>> GetAcronyms(string? id)
         {
-            if (db.User == null) return NotFound();
-
             var user = await db.User.Where(i => i.Id == id).Include(i => i.Acronyms).FirstOrDefaultAsync();
 
             if (user?.Acronyms == null) return NotFound();
@@ -39,8 +37,6 @@ namespace TILApp.Controllers
         public async Task<IActionResult> PutUser(string? id, User.Public dto)
         {
             var user = await db.User.Where(i => i.Id == id).FirstAsync();
-
-            if (user == null) return BadRequest();
 
             user.Name = dto.Name;
             user.UserName = dto.UserName;
@@ -80,8 +76,6 @@ namespace TILApp.Controllers
         [HttpDelete("{id}"), Authorize]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            if (db.User == null) return NotFound();
-
             var user = await db.User.FindAsync(id);
 
             if (user == null) return NotFound();
