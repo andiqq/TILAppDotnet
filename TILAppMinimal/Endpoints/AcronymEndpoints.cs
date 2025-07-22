@@ -29,12 +29,12 @@ public static class AcronymEndpoints
 
         //GET: minimalapi/Acronym/5/categories
         group.MapGet("{id:int}/Categories",
-                async Task<Results<Ok<List<CategoryDto>>, NotFound>> (int id, Context db) =>
+                async Task<Results<Ok<IEnumerable<CategoryDto>>, NotFound>> (int id, Context db) =>
                     await db.Acronym.AsNoTracking()
                             .Include(a => a.Categories)
                             .FirstOrDefaultAsync(a => a.Id == id)
-                        is { Categories.Count: not 0} acronym
-                        ? Ok(acronym.Categories.Select(c => c.ToDto()).ToList())
+                        is { } acronym
+                        ? Ok(acronym.Categories.Select(c => c.ToDto()))
                         : NotFound());
 
         //GET: minimalapi/Acronym/5/User
@@ -43,13 +43,15 @@ public static class AcronymEndpoints
                     await db.Acronym.AsNoTracking()
                             .Include(a => a.User)
                             .FirstOrDefaultAsync(a => a.Id == id)
-                        is { User: not null } acronym
-                        ? Ok(new User.Public(acronym.User))
+                        is { } acronym
+                        ? Ok(acronym.User is null 
+                            ? null 
+                            : new User.Public(acronym.User))
                         : NotFound());
 
         // GET: minimalapi/Acronym/search?Term=OMG
         group.MapGet("search",
-                async Task<Results<Ok<List<AcronymDto>>, NotFound>> (string term, Context db) =>
+                async Task<Results<Ok<IEnumerable<AcronymDto>>, NotFound>> (string term, Context db) =>
                 {
                     var acronyms = await db.Acronym.AsNoTracking()
                         .Where(a => a.Short.Contains(term) ||
@@ -58,7 +60,7 @@ public static class AcronymEndpoints
 
                     return acronyms.Count == 0
                         ? NotFound()
-                        : Ok(acronyms.Select(a => a.ToDto()).ToList());
+                        : Ok(acronyms.Select(a => a.ToDto()));
                 });
 
         // GET: minimalapi/Acronym/first

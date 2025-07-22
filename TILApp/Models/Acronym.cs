@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace TILApp.Models
 {
 
@@ -7,8 +9,9 @@ namespace TILApp.Models
         public string? Short { get; set; }
         public string? Long { get; set; }
 
-        public User? User { get; set; } 
-        public string? UserId { get; set; }
+        public User User { get; set; } 
+        
+        public string UserId { get; set; }
 
         public ICollection<Category>? Categories { get; set; }
 

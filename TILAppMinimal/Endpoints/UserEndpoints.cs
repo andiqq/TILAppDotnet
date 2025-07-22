@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using TILApp.Data;
@@ -19,22 +20,22 @@ namespace TILAppMinimal.Endpoints
             // GET: minimalapi/User/5
             group.MapGet("{id}",
                 async Task<Results<Ok<User.Public>, NotFound>> (string? id, Context db) =>
-                await db.User.FindAsync(id)
-                is { } user
-                ? Ok(new User.Public(user))
-                : NotFound()
-                );
-            
+                    await db.User.FindAsync(id)
+                        is { } user
+                        ? Ok(new User.Public(user))
+                        : NotFound()
+            );
+
             // GET: minimalapi/User/5/Acronyms
             group.MapGet("{id}/Acronyms",
                 async Task<Results<Ok<IEnumerable<ShortAcronym>>, NotFound>> (string? id, Context db) =>
-                {
-                    var user = await db.User.Where(i => i.Id == id).Include(i => i.Acronyms).FirstOrDefaultAsync();
+                    await db.User.AsNoTracking()
+                            .Include(i => i.Acronyms)
+                            .FirstOrDefaultAsync(u => u.Id == id)
+                        is { } user
+                        ? Ok(user.Acronyms.Select(a => a.ToShort()))
+                        : NotFound());
 
-                    return user.Acronyms == null 
-                        ? NotFound()
-                        : Ok(user.Acronyms.Select(a => a.ToShort()));
-                });
 
             // PUT: minimalapi/User/5
             group.MapPut("{id}",
@@ -49,11 +50,10 @@ namespace TILAppMinimal.Endpoints
 
                     db.User.Update(user);
                     await db.SaveChangesAsync();
-                    
-                    return Ok(new User.Public(user));
 
+                    return Ok(new User.Public(user));
                 }
-                );
+            );
 
             // DELETE: minimalapi/User/5
             group.MapDelete("{id}",
@@ -61,17 +61,13 @@ namespace TILAppMinimal.Endpoints
                 {
                     var user = await db.User.FindAsync(id);
 
-                    if (user == null) return NotFound();
+                  //  if (user == null) return NotFound();
 
                     db.User.Remove(user);
                     await db.SaveChangesAsync();
 
                     return NoContent();
                 });
-               
-           
-                
         }
     }
 }
-
