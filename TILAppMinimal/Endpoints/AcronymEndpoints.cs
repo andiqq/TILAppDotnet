@@ -106,6 +106,12 @@ public static class AcronymEndpoints
                     acronym.Long = acronymDto.Long ?? acronym.Long;
                     acronym.Short = acronymDto.Short ?? acronym.Short;
 
+                    if (!acronymDto.UserId.IsNullOrEmpty())
+                        if (await db.User.FirstOrDefaultAsync(u => u.Id == acronymDto.UserId) == null)
+                            return BadRequest();
+
+                    acronym.UserId = acronymDto.UserId ?? acronym.UserId;
+
                     db.Acronym.Update(acronym);
                     await db.SaveChangesAsync();
 

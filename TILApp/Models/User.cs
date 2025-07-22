@@ -4,15 +4,15 @@ namespace TILApp.Models;
 
 public class User : IdentityUser
 {
-    public string? Name { get; set; } = String.Empty;
+    public string? Name { get; set; } = string.Empty;
 
     public ICollection<Acronym>? Acronyms { get; set; }
 
     public class Public
     {
-     //   private string? Id { get; set; }
-        public string? Name { get; set; } = String.Empty;
-        public string? UserName { get; set; } = String.Empty;
+        public string? Name { get; } = string.Empty;
+
+        public string? UserName { get; } = string.Empty;
 
         public Public() { }
 

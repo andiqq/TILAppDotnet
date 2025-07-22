@@ -20,10 +20,21 @@ namespace TILAppMinimal.Endpoints
             group.MapGet("{id}",
                 async Task<Results<Ok<User.Public>, NotFound>> (string? id, Context db) =>
                 await db.User.FindAsync(id)
-                is User user
+                is { } user
                 ? Ok(new User.Public(user))
                 : NotFound()
                 );
+            
+            // GET: minimalapi/User/5/Acronyms
+            group.MapGet("{id}/Acronyms",
+                async Task<Results<Ok<IEnumerable<ShortAcronym>>, NotFound>> (string? id, Context db) =>
+                {
+                    var user = await db.User.Where(i => i.Id == id).Include(i => i.Acronyms).FirstOrDefaultAsync();
+
+                    return user.Acronyms == null 
+                        ? NotFound()
+                        : Ok(user.Acronyms.Select(a => a.ToShort()));
+                });
 
             // PUT: minimalapi/User/5
             group.MapPut("{id}",
