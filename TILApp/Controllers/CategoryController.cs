@@ -40,7 +40,7 @@ namespace TILApp.Controllers
 
             if (category == null || category.Acronyms == null) return NotFound();
 
-            return category.Acronyms.Select(a => a.ToDto()).OrderBy(i => i.Id).ToList();
+            return category.Acronyms.Select(a => a.ToDto()).OrderBy(i => i.Short).ToList();
         }
 
         // PUT: api/Category/5

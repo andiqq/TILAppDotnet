@@ -10,7 +10,7 @@ public class User : IdentityUser
 
     public class Public
     {
-        public string? Id { get; set; }
+     //   private string? Id { get; set; }
         public string? Name { get; set; } = String.Empty;
         public string? UserName { get; set; } = String.Empty;
 
@@ -18,14 +18,13 @@ public class User : IdentityUser
 
         public Public(User user)
         {
-            Id = user.Id;
             Name = user.Name;
             UserName = user.UserName;
         }
 
         public List<Public> List(List<User> users)
         {
-            return users.Select(a => new Public(a)).OrderBy(i => i.Id).ToList();
+            return users.Select(a => new Public(a)).OrderBy(i => i.UserName).ToList();
         }
     }
 }

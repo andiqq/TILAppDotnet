@@ -29,7 +29,7 @@ namespace TILAppMinimal.Endpoints
             group.MapPut("{id}",
                 async Task<Results<Ok<User.Public>, NotFound>> (string? id, User.Public publicUser, Context db) =>
                 {
-                    var user = await db.User.Where(u => u.Id == id).FirstAsync();
+                    var user = await db.User.FindAsync(id);
 
                     if (user == null) return NotFound();
 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TILApp.Data;
 using TILApp.Models;
 using static Microsoft.AspNetCore.Http.TypedResults;
@@ -16,9 +17,7 @@ public static class AcronymEndpoints
 
         // GET: minimalapi/Acronym
         group.MapGet("/", async (Context db) =>
-            Ok(await db.Acronym.Select(a => a.ToDto()).ToListAsync()))
-            .WithName("GetAllAcronyms")
-            .WithOpenApi();
+            Ok(await db.Acronym.Select(a => a.ToDto()).ToListAsync()));
 
         // GET: minimalapi/Acronym/5
         group.MapGet("{id:int}",
@@ -26,9 +25,7 @@ public static class AcronymEndpoints
                     await db.Acronym.FindAsync(id)
                         is Acronym acronym
                         ? Ok(acronym.ToDto())
-                        : NotFound())
-            .WithName("GetAcronymById")
-            .WithOpenApi();
+                        : NotFound());
 
         //GET: minimalapi/Acronym/5/categories
         group.MapGet("{id:int}/Categories",
@@ -38,9 +35,7 @@ public static class AcronymEndpoints
                             .FirstOrDefaultAsync(a => a.Id == id)
                         is { Categories.Count: not 0} acronym
                         ? Ok(acronym.Categories.Select(c => c.ToDto()).ToList())
-                        : NotFound())
-            .WithName("GetAcronymCategories")
-            .WithOpenApi();
+                        : NotFound());
 
         //GET: minimalapi/Acronym/5/User
         group.MapGet("{id:int}/User",
@@ -50,9 +45,7 @@ public static class AcronymEndpoints
                             .FirstOrDefaultAsync(a => a.Id == id)
                         is { User: not null } acronym
                         ? Ok(new User.Public(acronym.User))
-                        : NotFound())
-            .WithName("GetAcronymUser")
-            .WithOpenApi();
+                        : NotFound());
 
         // GET: minimalapi/Acronym/search?Term=OMG
         group.MapGet("search",
@@ -66,9 +59,7 @@ public static class AcronymEndpoints
                     return acronyms.Count == 0
                         ? NotFound()
                         : Ok(acronyms.Select(a => a.ToDto()).ToList());
-                })
-            .WithName("SearchForAcronymWithTerm")
-            .WithOpenApi();
+                });
 
         // GET: minimalapi/Acronym/first
         group.MapGet("first",
@@ -76,43 +67,49 @@ public static class AcronymEndpoints
                     await db.Acronym.AsNoTracking().FirstAsync()
                         is { } acronym
                         ? Ok(acronym.ToDto())
-                        : NotFound())
-            .WithName("GetFirstAcronym")
-            .WithOpenApi();
+                        : NotFound());
 
         // GET: minimalapi/Acronym/sort
         group.MapGet("sort",
                 async Task<Results<Ok<List<AcronymDto>>, NotFound>> (Context db) =>
                      Ok(await db.Acronym.AsNoTracking()
                                 .OrderBy(a => a.Short).Select(a => a.ToDto())
-                                .ToListAsync()))
-            .WithName("SortAcronyms")
-            .WithOpenApi();
+                                .ToListAsync()));
+        
+        // POST: minimalap/Acronym
+        group.MapPost("/",
+            async Task<Results<Ok<AcronymDto>, BadRequest>> (AcronymDto dto, Context db) =>
+            {
+                if (await db.User.FirstOrDefaultAsync(u => u.Id == dto.UserId) == null)
+                    return BadRequest();
+                
+                var acronym = new Acronym
+                {
+                    Short = dto.Short,
+                    Long = dto.Long,
+                    UserId = dto.UserId
+                };
+
+                await db.Acronym.AddAsync(acronym);
+                await db.SaveChangesAsync();
+
+                return Ok(acronym.ToDto());
+            });
 
         // PUT: minimalapi/Acronym/5
         group.MapPut("{id:int}",
-                async Task<Results<Ok, BadRequest, NotFound>> (int id, AcronymDto acronym, Context db) =>
+                async Task<Results<Ok<AcronymDto>, BadRequest, NotFound>> (int id, AcronymDto acronymDto, Context db) =>
                 {
-                    if (await db.Acronym.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id) is null)
-                        return NotFound();
-                    if (await db.User.AsNoTracking().FirstOrDefaultAsync(u => u.Id == acronym.UserId) is null)
-                        return BadRequest();
+                    var acronym = await db.Acronym.FindAsync(id);
+                    if (acronym == null) return NotFound();
 
-                    return await db.Acronym
-                        .Where(a => a.Id == id)
-                        .ExecuteUpdateAsync(setters => setters
-                            .SetProperty(m => m.Id, acronym.Id)
-                            .SetProperty(m => m.Long, acronym.Long)
-                            .SetProperty(m => m.Short, acronym.Short)
-                            .SetProperty(m => m.UserId, acronym.UserId)
-                        ) == 1
-                        ? Ok()
-                        : BadRequest();
-                    //        return affected == 1 ? Ok() : BadRequest();
-                })
-          //  .RequireAuthorization()
-            // TODO not active; .NET Identity is not yet part of the project
-            .WithName("UpdateAcronym")
-            .WithOpenApi();
+                    acronym.Long = acronymDto.Long ?? acronym.Long;
+                    acronym.Short = acronymDto.Short ?? acronym.Short;
+
+                    db.Acronym.Update(acronym);
+                    await db.SaveChangesAsync();
+
+                    return Ok(acronym.ToDto());
+                });
     }
 }
