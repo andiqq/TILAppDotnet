@@ -25,4 +25,8 @@ app.UseHttpsRedirection();
 
 app.MapAcronymEndpoints();
 
+app.MapCategoryEndpoints();
+
+app.MapUserEndpoints();
+
 app.Run();

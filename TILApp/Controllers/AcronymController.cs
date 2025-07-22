@@ -93,9 +93,7 @@ namespace TILApp.Controllers
         public async Task<IActionResult> UpdateUser(int id, string? userid)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).FirstAsync();
-            if (acronym == null) return BadRequest();
-            var user = await db.User.Where(i => i.Id == userid).FirstAsync();
-            if (user == null) return BadRequest();
+            await db.User.Where(i => i.Id == userid).FirstAsync();
             acronym.UserId = userid;
 
             db.Acronym.Update(acronym);
@@ -150,7 +148,7 @@ namespace TILApp.Controllers
         }
 
         // DELETE: api/Acronym/5/Category
-        [HttpDelete("{id}/Category"), Authorize]
+        [HttpDelete("{id:int}/Category"), Authorize]
         public async Task<IActionResult> DeleteCategory(int id, int catid)
         {
             var acronym = await db.Acronym.Where(i => i.Id == id).Include(a => a.Categories).FirstAsync();
@@ -167,9 +165,6 @@ namespace TILApp.Controllers
             return NoContent();
         }
 
-        private bool AcronymExists(int id)
-        {
-            return (db.Acronym?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+        private bool AcronymExists(int id) => (db.Acronym?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 }

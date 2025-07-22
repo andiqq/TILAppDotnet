@@ -21,21 +21,18 @@ namespace TILApp.Controllers
                 : NotFound();
 
         // GET: api/Category/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
-            if (db.Category == null) return NotFound();
             var category = await db.Category.FindAsync(id);
             if (category == null) return NotFound();
             return category.ToDto();
         }
 
         // GET: api/Category/5/Acronyms
-        [HttpGet("{id}/Acronyms")]
+        [HttpGet("{id:int}/Acronyms")]
         public async Task<ActionResult<IEnumerable<AcronymDto>>> GetAcronym(int id)
         {
-            if (db.Category == null) return NotFound();
-
             var category = await db.Category
                 .Where(i => i.Id == id)
                 .Include(i => i.Acronyms)
@@ -48,12 +45,10 @@ namespace TILApp.Controllers
 
         // PUT: api/Category/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}"), Authorize]
+        [HttpPut("{id:int}"), Authorize]
         public async Task<IActionResult> PutCategory(int id, CategoryDto dto)
         {
             var category = await db.Category.Where(i => i.Id == id).FirstAsync();
-
-            if (category == null) return BadRequest();
 
             category.Id = dto.Id;
             category.Name = dto.Name;
@@ -75,8 +70,6 @@ namespace TILApp.Controllers
         [HttpPost, Authorize]
         public async Task<ActionResult<Category>> PostCategory(CategoryDto dto)
         {
-            if (db.Category == null) return Problem("Entity set 'AcronymContext.Category' is null.");
-
             var category = new Category() { Name = dto.Name };
 
             db.Category.Add(category);
@@ -86,11 +79,9 @@ namespace TILApp.Controllers
         }
 
         // DELETE: api/Category/5
-        [HttpDelete("{id}"), Authorize]
+        [HttpDelete("{id:int}"), Authorize]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            if (db.Category == null) return NotFound();
-
             var category = await db.Category.FindAsync(id);
 
             if (category == null) return NotFound();

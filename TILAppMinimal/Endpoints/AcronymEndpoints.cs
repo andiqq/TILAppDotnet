@@ -63,7 +63,7 @@ public static class AcronymEndpoints
                                     a.Long.Contains(term)
                         ).ToListAsync();
 
-                    return acronyms is null || acronyms.Count == 0
+                    return acronyms.Count == 0
                         ? NotFound()
                         : Ok(acronyms.Select(a => a.ToDto()).ToList());
                 })
@@ -83,9 +83,7 @@ public static class AcronymEndpoints
         // GET: minimalapi/Acronym/sort
         group.MapGet("sort",
                 async Task<Results<Ok<List<AcronymDto>>, NotFound>> (Context db) =>
-                    db.Acronym is null
-                        ? NotFound()
-                        : Ok(await db.Acronym.AsNoTracking()
+                     Ok(await db.Acronym.AsNoTracking()
                                 .OrderBy(a => a.Short).Select(a => a.ToDto())
                                 .ToListAsync()))
             .WithName("SortAcronyms")
@@ -100,15 +98,17 @@ public static class AcronymEndpoints
                     if (await db.User.AsNoTracking().FirstOrDefaultAsync(u => u.Id == acronym.UserId) is null)
                         return BadRequest();
 
-                    var affected = await db.Acronym
+                    return await db.Acronym
                         .Where(a => a.Id == id)
                         .ExecuteUpdateAsync(setters => setters
                             .SetProperty(m => m.Id, acronym.Id)
                             .SetProperty(m => m.Long, acronym.Long)
                             .SetProperty(m => m.Short, acronym.Short)
                             .SetProperty(m => m.UserId, acronym.UserId)
-                        );
-                    return affected == 1 ? Ok() : BadRequest();
+                        ) == 1
+                        ? Ok()
+                        : BadRequest();
+                    //        return affected == 1 ? Ok() : BadRequest();
                 })
           //  .RequireAuthorization()
             // TODO not active; .NET Identity is not yet part of the project
