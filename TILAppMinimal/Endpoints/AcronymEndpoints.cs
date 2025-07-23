@@ -100,24 +100,26 @@ public static class AcronymEndpoints
 
         // PUT: minimalapi/Acronym/5
         group.MapPut("{id:int}",
-                async Task<Results<Ok<AcronymDto>, BadRequest, NotFound>> (int id, AcronymDto acronymDto, Context db) =>
+                async Task<Results<Ok, BadRequest, NotFound>> (int id, AcronymDto dto, Context db) =>
                 {
-                    var acronym = await db.Acronym.FindAsync(id);
-                    if (acronym == null) return NotFound();
-
-                    acronym.Long = acronymDto.Long ?? acronym.Long;
-                    acronym.Short = acronymDto.Short ?? acronym.Short;
-
-                    if (!acronymDto.UserId.IsNullOrEmpty())
-                        if (await db.User.FirstOrDefaultAsync(u => u.Id == acronymDto.UserId) == null)
-                            return BadRequest();
-
-                    acronym.UserId = acronymDto.UserId ?? acronym.UserId;
-
-                    db.Acronym.Update(acronym);
-                    await db.SaveChangesAsync();
-
-                    return Ok(acronym.ToDto());
+                    // Foreign key constraint
+                    if (await db.User.FindAsync(dto.UserId) == null)
+                        return BadRequest();
+                    
+                    return await db.Acronym
+                        .Where(a => a.Id == id)
+                        .ExecuteUpdateAsync(setters => setters
+                            .SetProperty(a => a.Long, dto.Long)
+                            .SetProperty(a => a.Short, dto.Short)
+                            .SetProperty(a => a.UserId, dto.UserId)
+                        ) == 1
+                        ? Ok() : NotFound();
                 });
+        
+        // DELETE: minimalapi/Acronym/5
+        group.MapDelete("{id:int}", async Task<Results<NoContent, NotFound>> (int id, Context db) =>
+            await db.Acronym
+                .Where(a => a.Id == id)
+                .ExecuteDeleteAsync() == 1 ? NoContent() : NotFound();
     }
 }

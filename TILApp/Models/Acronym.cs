@@ -6,12 +6,12 @@ namespace TILApp.Models
     public class Acronym
     {
         public int Id { get; init; }
-        public string? Short { get; set; }
-        public string? Long { get; set; }
+        public string? Short { get; set; } = string.Empty;
+        public string? Long { get; set; } = string.Empty;
 
-        public User User { get; set; } 
+        public User? User { get; set; } 
         
-        public string UserId { get; set; }
+        public required string UserId { get; set; }
 
         public ICollection<Category>? Categories { get; set; }
 
@@ -22,9 +22,9 @@ namespace TILApp.Models
 
     public class AcronymDto
     {
-        public string? Short { get; init; }
-        public string? Long { get; init; }
-        public string? UserId { get; init; }
+        public string? Short { get; init; } = string.Empty;
+        public string? Long { get; init; } 
+        public required string UserId { get; init; } 
     }
 
     public class ShortAcronym
