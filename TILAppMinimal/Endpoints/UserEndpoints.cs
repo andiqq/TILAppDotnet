@@ -27,40 +27,52 @@ public static class UserEndpoints
         );
 
         // GET: minimalapi/User/5/Acronyms
-        group.MapGet("{id}/Acronyms", async Task<Results<Ok<IEnumerable<ShortAcronym>>, NotFound>>
+        group.MapGet("{id}/Acronyms", async Task<Results<Ok<IEnumerable<AcronymDto>>, NotFound>>
                 (string? id, Context db) =>
                 await db.User.AsNoTracking()
                         .Include(i => i.Acronyms)
                         .FirstOrDefaultAsync(u => u.Id == id)
                     is { } user
-                    ? Ok(user.Acronyms.Select(a => a.ToShort()))
+                    ? Ok(user.Acronyms.Select(a => a.ToDto()))
                     : NotFound());
 
         // PUT: minimalapi/User/5
         group.MapPut("{id}",
-            async Task<Results<Ok<User.Public>, NotFound>> (string? id, User.Public publicUser, Context db) =>
-            {
-                var user = await db.User.FindAsync(id);
-
-                if (user == null) return NotFound();
-
-                user.Name ??= publicUser.Name;
-                user.UserName ??= publicUser.UserName;
-
-                db.User.Update(user);
-                await db.SaveChangesAsync();
-
-                return Ok(new User.Public(user));
-            }
-        );
+            async Task<Results<Ok, NotFound>> (string? id, User.Public publicUser, Context db) => await db.User
+                .Where(u => u.Id == id)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(u => u.Name, publicUser.Name)
+                    .SetProperty(u => u.UserName, publicUser.UserName)
+                ) == 1
+                ? Ok()
+                : NotFound());
 
         // DELETE: minimalapi/User/5
+        object i = new
+        {
+            error = "Cannot delete user",
+            message = "User has associated acronyms. Delete or reassign them first.",
+            details = "This user cannot be deleted because they have acronyms associated with their account."
+        };
+        
         group.MapDelete("{id}",
-            async Task<Results<NoContent, NotFound>> (string? id, Context db) =>
-                await db.User
+            async Task<Results<NoContent, NotFound, Conflict<object>>> (string? id, Context db) =>
+            {
+                var user = await db.User
                     .Where(u => u.Id == id)
+                    .Include(u => u.Acronyms)
+                    .FirstOrDefaultAsync();
+
+                if (user is null) return NotFound();
+
+                if (user.Acronyms.Count != 0) return Conflict(i);
+                
+                return await db.User
+                    .Where(u => u.Id == id)
+                    .Include(u => u.Acronyms)
                     .ExecuteDeleteAsync() == 1
                     ? NoContent()
-                    : NotFound());
+                    : NotFound();
+            });
     }
 }

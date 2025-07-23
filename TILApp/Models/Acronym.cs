@@ -16,8 +16,7 @@ namespace TILApp.Models
         public ICollection<Category>? Categories { get; set; }
 
         public AcronymDto ToDto() => new() { Long = Long, Short = Short, UserId = UserId };
-
-        public ShortAcronym ToShort() => new() { Short = Short, Long = Long };
+        
     }
 
     public class AcronymDto
@@ -25,12 +24,6 @@ namespace TILApp.Models
         public string? Short { get; init; } = string.Empty;
         public string? Long { get; init; } 
         public required string UserId { get; init; } 
-    }
-
-    public class ShortAcronym
-    {
-        public string? Short { get; init; }
-        public string? Long { get; init; }
     }
 }
 

@@ -10,6 +10,7 @@ public class User : IdentityUser
 
     public class Public
     {
+        public string Id { get; } = string.Empty;
         public string? Name { get; } = string.Empty;
 
         public string? UserName { get; } = string.Empty;
@@ -18,6 +19,7 @@ public class User : IdentityUser
 
         public Public(User user)
         {
+            Id = user.Id;
             Name = user.Name;
             UserName = user.UserName;
         }

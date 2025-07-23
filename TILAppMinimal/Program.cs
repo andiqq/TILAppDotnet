@@ -4,6 +4,13 @@ using TILAppMinimal.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var i = new
+{
+    error = "Cannot delete user",
+    message = "User has associated acronyms. Delete or reassign them first.",
+    details = "This user cannot be deleted because they have acronyms associated with their account."
+};
+
 // Add services to the container.
 builder.Services.AddDbContext<Context>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("AcronymContext")));
