@@ -120,6 +120,8 @@ public static class AcronymEndpoints
         group.MapDelete("{id:int}", async Task<Results<NoContent, NotFound>> (int id, Context db) =>
             await db.Acronym
                 .Where(a => a.Id == id)
-                .ExecuteDeleteAsync() == 1 ? NoContent() : NotFound();
+                .ExecuteDeleteAsync() == 1
+                ? NoContent()
+                : NotFound());
     }
 }
