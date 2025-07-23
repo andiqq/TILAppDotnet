@@ -2,11 +2,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace TILApp.Data;
 
-public class Context : IdentityDbContext<User>
+public class Context(DbContextOptions<Context> options) : IdentityDbContext<User>(options)
 {
-    public Context(DbContextOptions<Context> options) : base(options)
-    {
-    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
        base.OnModelCreating(modelBuilder);
