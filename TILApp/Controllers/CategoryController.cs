@@ -4,27 +4,20 @@ namespace TILApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoryController(Context context) : ControllerBase
     {
-        private readonly Context db;
-
-        public CategoryController(Context context)
-        {
-            db = context;
-        }
-
         // GET: api/Category
         [HttpGet]
         public async Task<ActionResult<List<CategoryDto>>> GetCategory() =>
-            db.Category.Any()
-                ? Ok(await db.Category.Select(c => c.ToDto()).ToListAsync())
+            context.Category.Any()
+                ? Ok(await context.Category.Select(c => c.ToDto()).ToListAsync())
                 : NotFound();
 
         // GET: api/Category/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
-            var category = await db.Category.FindAsync(id);
+            var category = await context.Category.FindAsync(id);
             if (category == null) return NotFound();
             return category.ToDto();
         }
@@ -33,7 +26,7 @@ namespace TILApp.Controllers
         [HttpGet("{id:int}/Acronyms")]
         public async Task<ActionResult<IEnumerable<AcronymDto>>> GetAcronym(int id)
         {
-            var category = await db.Category
+            var category = await context.Category
                 .Where(i => i.Id == id)
                 .Include(i => i.Acronyms)
                 .FirstOrDefaultAsync();
@@ -48,14 +41,14 @@ namespace TILApp.Controllers
         [HttpPut("{id:int}"), Authorize]
         public async Task<IActionResult> PutCategory(int id, CategoryDto dto)
         {
-            var category = await db.Category.Where(i => i.Id == id).FirstAsync();
+            var category = await context.Category.Where(i => i.Id == id).FirstAsync();
 
             category.Id = dto.Id;
             category.Name = dto.Name;
 
-            db.Category.Update(category);
+            context.Category.Update(category);
 
-            try { await db.SaveChangesAsync(); }
+            try { await context.SaveChangesAsync(); }
             catch (DbUpdateConcurrencyException)
             {
                 if (!CategoryExists(id)) return NotFound();
@@ -72,8 +65,8 @@ namespace TILApp.Controllers
         {
             var category = new Category() { Name = dto.Name };
 
-            db.Category.Add(category);
-            await db.SaveChangesAsync();
+            context.Category.Add(category);
+            await context.SaveChangesAsync();
 
             return CreatedAtAction("GetCategory", new { id = category.Id }, category);
         }
@@ -82,12 +75,12 @@ namespace TILApp.Controllers
         [HttpDelete("{id:int}"), Authorize]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var category = await db.Category.FindAsync(id);
+            var category = await context.Category.FindAsync(id);
 
             if (category == null) return NotFound();
 
-            db.Category.Remove(category);
-            await db.SaveChangesAsync();
+            context.Category.Remove(category);
+            await context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -96,7 +89,7 @@ namespace TILApp.Controllers
 
         private bool CategoryExists(int id)
         {
-            return (db.Category?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (context.Category?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

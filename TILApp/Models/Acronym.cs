@@ -11,7 +11,7 @@ namespace TILApp.Models
 
         public User? User { get; set; } 
         
-        public required string UserId { get; set; }
+        public required string? UserId { get; set; }
 
         public ICollection<Category>? Categories { get; set; }
 
