@@ -22,8 +22,7 @@ public static class AcronymEndpoints
         // GET: minimalapi/Acronym/5
         group.MapGet("{id:int}",
                 async Task<Results<Ok<AcronymDto>, NotFound>> (int id, Context db) =>
-                    await db.Acronym.FindAsync(id)
-                        is Acronym acronym
+                    await db.Acronym.FindAsync(id) is Acronym acronym
                         ? Ok(acronym.ToDto())
                         : NotFound());
 
@@ -49,19 +48,13 @@ public static class AcronymEndpoints
                             : new User.Public(acronym.User))
                         : NotFound());
 
-        // GET: minimalapi/Acronym/search?Term=OMG
+        // GET: minimalapi/Acronym/search?Term=TIL
         group.MapGet("search",
-                async Task<Results<Ok<IEnumerable<AcronymDto>>, NotFound>> (string term, Context db) =>
-                {
-                    var acronyms = await db.Acronym.AsNoTracking()
-                        .Where(a => a.Short.Contains(term) ||
-                                    a.Long.Contains(term)
-                        ).ToListAsync();
-
-                    return acronyms.Count == 0
-                        ? NotFound()
-                        : Ok(acronyms.Select(a => a.ToDto()));
-                });
+            async Task (string term, Context db) 
+                => Ok(await db.Acronym.AsNoTracking()
+                        .Where(a => a.Short == term || a.Long == term)
+                        .Select(a => a.ToDto())
+                        .ToListAsync()));
 
         // GET: minimalapi/Acronym/first
         group.MapGet("first",
@@ -75,7 +68,8 @@ public static class AcronymEndpoints
         group.MapGet("sort",
                 async Task<Results<Ok<List<AcronymDto>>, NotFound>> (Context db) =>
                      Ok(await db.Acronym.AsNoTracking()
-                                .OrderBy(a => a.Short).Select(a => a.ToDto())
+                                .OrderBy(a => a.Short)
+                                .Select(a => a.ToDto())
                                 .ToListAsync()));
         
         // POST: minimalap/Acronym

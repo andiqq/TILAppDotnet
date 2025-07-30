@@ -15,15 +15,16 @@ namespace TILApp.Models
 
         public ICollection<Category>? Categories { get; set; }
 
-        public AcronymDto ToDto() => new() { Long = Long, Short = Short, UserId = UserId };
+        public AcronymDto ToDto() => new() {Id = Id, Long = Long, Short = Short, UserId = UserId };
         
     }
 
     public class AcronymDto
     {
+        public int Id { get; init; }
         public string? Short { get; init; } = string.Empty;
-        public string? Long { get; init; } 
-        public required string UserId { get; init; } 
+        public string? Long { get; init; }
+        public string? UserId { get; init; } = string.Empty;
     }
 }
 
