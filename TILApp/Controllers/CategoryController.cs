@@ -46,7 +46,7 @@ namespace TILApp.Controllers
             db.Category.Add(category);
             await db.SaveChangesAsync();
 
-            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+            return CreatedAtAction("GetCategory", new { id = category.Id }, category.ToDto());
         }
         
         // Routes with authorization
@@ -76,13 +76,6 @@ namespace TILApp.Controllers
             await db.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        
-
-        private bool CategoryExists(int id)
-        {
-            return (db.Category?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

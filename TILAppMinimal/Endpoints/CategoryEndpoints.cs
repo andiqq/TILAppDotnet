@@ -31,7 +31,7 @@ public static class CategoryEndpoints
             db.Category.Add(category);
             await db.SaveChangesAsync();
             
-            return Created($"/api/Category/{category.Id}", category);
+            return Created($"/api/Category/{category.Id}", category.ToDto());
         });
 
         group.MapPut("/{id:int}", 

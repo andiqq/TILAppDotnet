@@ -9,9 +9,7 @@ namespace TILApp.Controllers
         // GET: api/User
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User.Public>>> GetUser() =>
-            db.User.Any()
-                ? Ok(new User.Public().List(await db.User.ToListAsync()))
-                : NotFound();
+            Ok(new User.Public().List(await db.User.AsNoTracking().ToListAsync()));
         
         // GET: api/User/5
         [HttpGet("{id}")]
@@ -22,63 +20,48 @@ namespace TILApp.Controllers
         
         // GET: api/User/5/Acronyms
         [HttpGet("{id}/Acronyms")]
-        public async Task<ActionResult<IEnumerable<AcronymDto>>> GetAcronyms(string? id)
-        {
-            var user = await db.User.Where(i => i.Id == id).Include(i => i.Acronyms).FirstOrDefaultAsync();
-
-            if (user?.Acronyms == null) return NotFound();
-
-            return (user.Acronyms).Select(a => a.ToDto()).ToList();
-        }
+        public async Task<ActionResult<IEnumerable<AcronymDto>>> GetAcronyms(string? id) =>
+            await db.User.AsNoTracking()
+                    .Include(i => i.Acronyms)
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                is { } user
+                ? Ok(user.Acronyms.Select(a => a.ToDto()))
+                : NotFound();
 
         // PUT: api/User/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}"), Authorize]
-        public async Task<IActionResult> PutUser(string? id, User.Public dto)
-        {
-            var user = await db.User.Where(i => i.Id == id).FirstAsync();
-
-            user.Name = dto.Name;
-            user.UserName = dto.UserName;
-            
-            db.User.Update(user);
-
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id)) return NotFound();
-                else throw;
-            }
-            return Ok(new User.Public(user));
-        }
+        public async Task<IActionResult> PutUser(string? id, User.Public dto) =>
+            await db.User
+                .Where(u => u.Id == id)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(u => u.Name, dto.Name)
+                    .SetProperty(u => u.UserName, dto.UserName)
+                ) == 1
+                ? Ok()
+                : NotFound();
 
         // POST: api/User
         // POST is disabled; new Users can only be added through the identity api end point /register
 
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // [HttpPost]
-        // public async Task<ActionResult<User.Public>> PostUser(User.Public publicUser)
-        // {
-        //     if (db.User == null) return Problem("Entity set 'AcronymContext.User'  is null.");
-        //
-        //     var user = new User() { Name = publicUser.Name, UserName = publicUser.UserName };
-        //
-        //     db.User.Add(user);
-        //     await db.SaveChangesAsync();
-        //
-        //     return CreatedAtAction("GetUser", new { id = publicUser.Id }, publicUser);
-        // }
-
         // DELETE: api/User/5
+        
         [HttpDelete("{id}"), Authorize]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            var user = await db.User.FindAsync(id);
+            var user = await db.User
+                .Where(u => u.Id == id)
+                .Include(u => u.Acronyms)
+                .FirstOrDefaultAsync();
 
-            if (user == null) return NotFound();
+            if (user is null) return NotFound();
+            
+            if (user.Acronyms.Count != 0) return Conflict(new
+            {
+                error = "Cannot delete user",
+                message = "User has associated acronyms. Delete or reassign them first.",
+                details = "This user cannot be deleted because they have acronyms associated with their account."
+            });
 
             db.User.Remove(user);
             await db.SaveChangesAsync();
