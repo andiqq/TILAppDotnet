@@ -10,46 +10,45 @@ using TILApp.Models;
 
 namespace TILApp.test;
 
-public class CategoriesControllerTest : IClassFixture<WebApplicationFactory<Program>>
+public class CategoriesControllerTest
 {
     private readonly HttpClient client;
-
-    public CategoriesControllerTest(WebApplicationFactory<Program> factory)
+    public CategoriesControllerTest()
     {
-        client = factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureServices(services =>
+        client = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
             {
-                services.AddDbContext<Context>(options => 
-                    options.UseNpgsql("Host=localhost;Database=testdb;Username=vapor_username;Password=vapor_password"));
-                var sp = services.BuildServiceProvider();
-                using var scope = sp.CreateScope();
-                var db = scope.ServiceProvider.GetRequiredService<Context>();
-                db.Database.EnsureDeleted();
-                db.Database.Migrate();
-                db.Category.Add(new Category() { Name = "Classics" });
-                db.SaveChangesAsync();
-            });
-        }).CreateClient();
+                builder.ConfigureServices(services =>
+                {
+                    services.AddDbContext<Context>(options => 
+                        options.UseNpgsql("Host=localhost;Database=testdb;Username=vapor_username;Password=vapor_password"));
+                    using var db = services
+                        .BuildServiceProvider()
+                        .CreateScope()
+                        .ServiceProvider
+                        .GetRequiredService<Context>();
+                    db.Database.EnsureDeleted();
+                    db.Database.Migrate();
+                    db.Category.Add(new Category() { Name = "Classics" });
+                    db.SaveChanges();
+                });
+            }).CreateClient();
     }
     
     [Fact]
     public async Task GetCategory()
     {
-        var response = await client.GetAsync("/api/Category/1");
+        var response = await client.GetAsync("/minimalapi/Category/1");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         (await response.Content.ReadFromJsonAsync<CategoryDto>()).Name.Should().Be("Classics");
     }
     [Fact]
     public async Task GetCategories()
     {
-        var response = await client.GetAsync("/api/Category");
+        var response = await client.GetAsync("/minimalapi/Category");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        (await response.Content.ReadFromJsonAsync<CategoryDto>()).Name.Should().Be("Classics");
+        var categories = (await response.Content.ReadFromJsonAsync<IEnumerable<CategoryDto>>()).ToArray();
+        categories[0].Name.Should().Be("Classics");
+        categories.Length.Should().Be(1);
     }
-    
-    
-   
-    
-    
 }

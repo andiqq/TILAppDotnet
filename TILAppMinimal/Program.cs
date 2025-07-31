@@ -37,3 +37,5 @@ app.MapCategoryEndpoints();
 app.MapUserEndpoints();
 
 app.Run();
+
+public abstract partial class Program;
