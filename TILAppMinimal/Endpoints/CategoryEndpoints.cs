@@ -12,31 +12,40 @@ public static class CategoryEndpoints
     {
         var group = routes.MapGroup("/api/Category").WithTags(nameof(Category));
 
-        group.MapGet("/", async (Context db) => await db.Category.ToListAsync());
+        group.MapGet("/", async (Context db) =>
+            Ok(await db.Category.AsNoTracking()
+                .Select(c => c.ToDto())
+                .ToListAsync()));
 
-        group.MapGet("/{id:int}", async Task<Results<Ok<Category>, NotFound>> (int id, Context db) =>
+        group.MapGet("/{id:int}",
+            async Task<Results<Ok<CategoryDto>, NotFound>> (int id, Context db) =>
+                await db.Category.FindAsync(id)
+                    is { } category
+                    ? Ok(category.ToDto())
+                    : NotFound());
+        
+        group.MapPost("/", async (CategoryDto dto, Context db) =>
         {
-            return await db.Category.AsNoTracking()
-                    .FirstOrDefaultAsync(c => c.Id == id)
-                is { } model
-                ? Ok(model)
-                : NotFound();
+            var category = new Category() { Name = dto.Name };
+            
+            db.Category.Add(category);
+            await db.SaveChangesAsync();
+            
+            return Created($"/api/Category/{category.Id}", category);
         });
 
-        group.MapPut("/{id:int}", async Task<Results<Ok, NotFound>> (int id, Category category, Context db) =>
+        group.MapPut("/{id:int}", 
+            async Task<Results<Ok<CategoryDto>, NotFound>> (int id, CategoryDto dto, Context db) =>
             await db.Category
                 .Where(c => c.Id == id)
                 .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(c => c.Id, category.Id)
-                    .SetProperty(c => c.Name, category.Name)
-                ) == 1 ? Ok() : NotFound());
+                    .SetProperty(c => c.Id, dto.Id)
+                    .SetProperty(c => c.Name, dto.Name)
+                ) == 1
+                ? Ok(dto)
+                : NotFound());
 
-        group.MapPost("/", async (Category category, Context db) =>
-        {
-            db.Category.Add(category);
-            await db.SaveChangesAsync();
-            return Created($"/api/Category/{category.Id}", category);
-        });
+        
 
         group.MapDelete("/{id:int}", async Task<Results<NoContent, NotFound>> (int id, Context db) =>
             await db.Category

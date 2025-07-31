@@ -26,6 +26,7 @@ public static class AcronymEndpoints
                     await db.Acronym.FindAsync(id) is { } acronym
                         ? Ok(acronym.ToDto())
                         : NotFound());
+        
         // GET: minimalapi/Acronym/search?Term=TIL
         group.MapGet("search",
             async Task (string term, Context db) 
