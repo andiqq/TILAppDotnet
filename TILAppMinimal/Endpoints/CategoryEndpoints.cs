@@ -10,7 +10,7 @@ public static class CategoryEndpoints
 {
     public static void MapCategoryEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/Category").WithTags(nameof(Category));
+        var group = routes.MapGroup("/minimalapi/Category").WithTags(nameof(Category));
 
         group.MapGet("/", async (Context db) =>
             Ok(await db.Category.AsNoTracking()
@@ -31,7 +31,7 @@ public static class CategoryEndpoints
             db.Category.Add(category);
             await db.SaveChangesAsync();
             
-            return Created($"/api/Category/{category.Id}", category.ToDto());
+            return Created($"/minimalapi/Category/{category.Id}", category.ToDto());
         });
 
         group.MapPut("/{id:int}", 
