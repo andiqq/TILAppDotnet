@@ -1,15 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using TILApp.Data;
+using TILApp.Models;
 using TILAppMinimal.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var i = new
-{
-    error = "Cannot delete user",
-    message = "User has associated acronyms. Delete or reassign them first.",
-    details = "This user cannot be deleted because they have acronyms associated with their account."
-};
 
 // Add services to the container.
 builder.Services.AddDbContext<Context>(options =>
@@ -19,6 +13,11 @@ builder.Services.AddDbContext<Context>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthorization();
+
+builder.Services.AddIdentityApiEndpoints<User>()
+    .AddEntityFrameworkStores<Context>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +26,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapGroup("Account").MapIdentityApi<User>();
 
 app.UseHttpsRedirection();
 
