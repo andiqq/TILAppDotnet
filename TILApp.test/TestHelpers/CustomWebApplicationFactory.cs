@@ -1,0 +1,22 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using TILApp.Data;
+
+namespace TILApp.test.TestHelpers;
+
+// ReSharper disable once ClassNeverInstantiated.Global
+public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
+{
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        base.ConfigureWebHost(builder);
+
+        builder.ConfigureServices(services =>
+        {
+            services.AddDbContext<Context>(options => 
+                options.UseNpgsql("Host=localhost;Database=testdb;Username=vapor_username;Password=vapor_password"));
+        });
+    }
+}

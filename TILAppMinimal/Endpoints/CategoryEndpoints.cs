@@ -36,14 +36,17 @@ public static class CategoryEndpoints
 
         group.MapPut("/{id:int}", 
             async Task<Results<Ok<CategoryDto>, NotFound>> (int id, CategoryDto dto, Context db) =>
-            await db.Category
-                .Where(c => c.Id == id)
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(c => c.Id, dto.Id)
-                    .SetProperty(c => c.Name, dto.Name)
-                ) == 1
-                ? Ok(dto)
-                : NotFound());
+            {
+                if (dto.Id == 0) dto.Id = id; 
+                return await db.Category
+                    .Where(c => c.Id == id)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(c => c.Id, dto.Id)
+                        .SetProperty(c => c.Name, dto.Name)
+                    ) == 1
+                    ? Ok(dto)
+                    : NotFound();
+            });
 
         
 
