@@ -16,8 +16,12 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
         builder.ConfigureServices(services =>
         {
             string databaseName = $"testdb{Guid.NewGuid().ToString("N")[..10]}";
-            services.AddDbContext<Context>(options => 
-                options.UseNpgsql($"Host=localhost;Database={databaseName};Username=vapor_username;Password=vapor_password"));
+            services.AddDbContext<Context>(options =>
+              options.UseNpgsql(
+                "Host=MacStudio.local;" +
+                $"Database={databaseName};" +
+                "Username=vapor_username;" +
+                "Password=vapor_password"));
         });
     }
 }
