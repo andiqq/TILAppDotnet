@@ -1,0 +1,59 @@
+@inject Context Context
+@inject NavigationManager NM
+@attribute [StreamRendering]
+@namespace TILAppBlazorSSR.Components.Pages
+
+@if (Acronyms == null || !Acronyms.Any())
+{
+    <p>
+        <em>There aren't any Acronyms yet</em>
+    </p>
+}
+else 
+{
+    <QuickGrid Class="table table-striped custom-row-height" Items="Acronyms" >
+
+        <TemplateColumn Title="Short">
+            <a href="acronym-details/@context.Id">@context.Short</a>
+        </TemplateColumn>
+        
+        <PropertyColumn Property="acronym => acronym.Long"/>
+
+        <TemplateColumn Context="acronym">
+            <form method="post" data-enhance
+                  @formname="@($"DeleteAcronymForm{acronym.Id}")"
+                  @onsubmit="() => DeleteAcronym(acronym.Id)">
+                
+                <AuthorizeView>
+                    <a class="btn btn-secondary" href="edit-acronym/@acronym.Id" role="button">Edit</a>&nbsp;
+                    <button class="btn btn-danger">Delete</button>
+                </AuthorizeView>
+                <AntiforgeryToken/>
+
+            </form>
+        </TemplateColumn>
+
+    </QuickGrid>
+}
+
+
+@code {
+
+    [Parameter] public IQueryable<Acronym> Acronyms { get; set; } = null!;
+
+    private async Task DeleteAcronym(int id)
+    {
+        if (Context.Acronym != null)
+        {
+            var acronym = await Context.Acronym.FindAsync(id);
+            if (acronym is not null)
+            {
+                Context.Remove(acronym);
+                await Context.SaveChangesAsync();
+                Acronyms = Context.Acronym;
+                NM.Refresh();
+            }
+        }
+    }
+
+}
