@@ -2,14 +2,18 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using TILApp.Data;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateSlimBuilder(args);
 
 // --> Configure Services
 
 builder.Services.AddControllers();
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<Context>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("AcronymContext")));
+    options.UseNpgsql(connectionString));
+
+//builder.Services.AddDbContext<Context>(options =>
+  //  options.UseNpgsql(builder.Configuration.GetConnectionString("AcronymContext")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47ED07DF-313F-4A51-903E-D3D3F27CCF35}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		compose.yaml = compose.yaml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TILAppBlazorSSR", "TILAppBlazorSSR\TILAppBlazorSSR.csproj", "{D62CABBB-D04F-4805-BD78-818636CE5EC3}"
